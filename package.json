@@ -1,0 +1,39 @@
+{
+	"name": "desktop-app",
+	"version": "0.1.0",
+	"main": "background.js",
+	"private": true,
+	"scripts": {
+		"serve": "vue-cli-service serve",
+		"build": "vue-cli-service build",
+		"electron:build": "vue-cli-service electron:build",
+		"electron:serve": "vue-cli-service electron:serve",
+		"postinstall": "electron-builder install-app-deps"
+	},
+	"dependencies": {
+		"vue": "^2.5.17",
+		"vue-router": "^3.0.2",
+		"vuex": "^3.0.1"
+	},
+	"devDependencies": {
+		"@vue/cli-plugin-babel": "^3.1.1",
+		"@vue/cli-service": "^3.1.4",
+		"babel-eslint": "^10.0.1",
+		"electron": "^3.0.10",
+		"eslint": "^5.9.0",
+		"eslint-config-aqua": "^4.4.1",
+		"eslint-plugin-vue": "^5.0.0-beta.5",
+		"node-sass": "^4.10.0",
+		"sass-loader": "^7.1.0",
+		"vue-cli-plugin-electron-builder": "^1.0.0-rc.8",
+		"vue-template-compiler": "^2.5.17",
+		"workerize-loader": "^1.0.4"
+	},
+	"eslintConfig": {
+		"extends": [
+			"aqua",
+			"aqua/node",
+			"aqua/vue"
+		]
+	}
+}
