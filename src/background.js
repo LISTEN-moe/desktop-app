@@ -10,8 +10,11 @@ let settingsModal;
 protocol.registerStandardSchemes(['app'], { secure: true });
 function createWindow() {
 	win = new BrowserWindow({
+		title: 'LISTEN.MOE - Desktop App',
 		width: 800,
-		height: 200,
+		minWidth: 400,
+		height: 80,
+		minHeight: 80,
 		frame: false,
 		transparent: true
 	});
@@ -45,8 +48,7 @@ function createWindow() {
 			height: 500,
 			frame: false,
 			transparent: true,
-			parent: win,
-			show: false
+			parent: win
 		});
 
 		if (isDevelopment || process.env.IS_TEST) {
@@ -54,8 +56,6 @@ function createWindow() {
 		} else {
 			loginModal.loadURL('app://./index.html#login');
 		}
-
-		loginModal.once('ready-to-show', () => loginModal.show());
 
 		loginModal.once('close', () => {
 			loginModal = null;
@@ -70,8 +70,7 @@ function createWindow() {
 			height: 500,
 			frame: false,
 			transparent: true,
-			parent: win,
-			show: false
+			parent: win
 		});
 
 		if (isDevelopment || process.env.IS_TEST) {
@@ -79,8 +78,6 @@ function createWindow() {
 		} else {
 			settingsModal.loadURL('app://./index.html#settings');
 		}
-
-		settingsModal.once('ready-to-show', () => settingsModal.show());
 
 		settingsModal.once('close', () => {
 			settingsModal = null;
