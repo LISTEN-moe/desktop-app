@@ -9,8 +9,6 @@
 	body {
 		height: 100vh;
 		overflow: hidden;
-		display: flex;
-		flex-grow: 1;
 		margin: 0;
 	}
 
@@ -20,9 +18,15 @@
 		-moz-osx-font-smoothing: grayscale;
 		text-align: center;
 		color: #2c3e50;
+	}
 
-		display: flex;
-		flex-grow: 1;
+	div, span, h1, h2, a, label {
+		font-size: 1rem;
+		font-style: normal;
+		font-weight: 400;
+		text-rendering: optimizeLegibility;
+		text-size-adjust: 100%;
+		-webkit-font-smoothing: antialiased;
 	}
 </style>
 
