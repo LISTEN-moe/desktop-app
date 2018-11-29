@@ -17,9 +17,15 @@
 					". . . . coverArt";
 			}
 		}
-		&.gaps { grid-gap: 5px; }
 
-		.playButton { grid-area: playButton; }
+		&.gaps {
+			grid-gap: 5px;
+		}
+
+		.playButton {
+			grid-area: playButton;
+		}
+
 		.player {
 			grid-area: player;
 			-webkit-app-region: drag;
@@ -27,6 +33,7 @@
 			display: grid;
 			grid-template-columns: 100%;
 			grid-template-rows: auto auto auto;
+			overflow: hidden;
 
 			// Span and links color
 			color: #c7ccd8;
@@ -58,12 +65,17 @@
 			.info {
 				max-height: 22px;
 				background: linear-gradient(to right, rgba(0,0,0,0) 0%,rgba(0,0,0,0.3) 22%,rgba(0,0,0,0.3) 50%,rgba(0, 0, 0, 0.3) 80%,rgba(0,0,0,0) 100%);
+
 				.requestedBy, .eventTime {
 					font-size: .8rem;
+
 					& span, a {
 						font-size: .8rem;
 					}
-					& a { font-weight: 700; }
+
+					& a {
+						font-weight: 700;
+					}
 				}
 			}
 
@@ -77,17 +89,27 @@
 				z-index: 0;
 			}
 		}
-		.favoriteButton { grid-area: favoriteButton; }
-		.volumeButton { grid-area: volumeButton; }
+
+		.favoriteButton {
+			grid-area: favoriteButton;
+		}
+
+		.volumeButton {
+			grid-area: volumeButton;
+		}
+
 		.albumContainer {
 			grid-area: coverArt;
 			max-width: 64px;
 			background: none;
+
 			a {
 				display: block;
 				max-height: 64px;
 
-				img { max-width: 64px; }
+				img {
+					max-width: 64px;
+				}
 			}
 
 			&.big {
@@ -104,6 +126,7 @@
 
 		> div {
 			background: #1d1f2b;
+
 			> svg {
 				margin-top: 20px;
 				width: 24px;

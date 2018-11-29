@@ -7,7 +7,6 @@
 	}
 
 	body {
-		height: 100vh;
 		overflow: hidden;
 		margin: 0;
 	}

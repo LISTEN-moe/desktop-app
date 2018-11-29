@@ -19,6 +19,7 @@
 				left: unset;
 				right: 0px;
 			}
+
 			&.active:before {
 				opacity: 1
 			}
@@ -53,5 +54,5 @@ export default {
 			'default': true
 		}
 	}
-}
+};
 </script>

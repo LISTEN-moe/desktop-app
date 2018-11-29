@@ -4,10 +4,10 @@
 		overflow: hidden;
 		white-space: nowrap;
 
-		> .content {
+		/* > .content {
 			width: auto;
 			display: initial !important;
-		}
+		} */
 	}
 </style>
 
@@ -90,7 +90,7 @@ export default {
 			if (!this.$refs.wrapper || !this.$refs.content) return;
 			this.translated = 0;
 			this.wrapperWidth = this.$refs.wrapper.offsetWidth;
-			this.contentWidth = this.$refs.content.scrollWidth;
+			this.contentWidth = this.$refs.wrapper.scrollWidth;
 			this.scrollEnabled = this.contentWidth > this.wrapperWidth;
 		}
 	}

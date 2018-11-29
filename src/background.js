@@ -94,6 +94,10 @@ function createWindow() {
 			settingsModal = null;
 		});
 	});
+
+	ipcMain.on('reload', () => {
+		win.reload();
+	});
 }
 
 app.on('window-all-closed', () => {

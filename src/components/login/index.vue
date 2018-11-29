@@ -160,7 +160,8 @@ export default {
 		},
 		async loginMfa() {
 			if (!this.mfaToken) {
-				this.$store.dispatch('alert', { message: 'Can\'t log in without mfa token, you special snowflake ❄', error: true, duration: 5000 });
+				// TODO: Proper feedback
+				/* this.$store.dispatch('alert', { message: 'Can\'t log in without mfa token, you special snowflake ❄', error: true, duration: 5000 }); */
 				return;
 			}
 			try {
