@@ -3,7 +3,7 @@ module.exports = {
 	pluginOptions: {
 		electronBuilder: {
 			builderOptions: {
-				appId: 'com.electron.listen-moe',
+				appId: 'moe.listen.desktop',
 				productName: 'LISTEN.moe - Desktop App',
 				copyright: 'Copyright © 2018-2019 iCrawl',
 				win: {
