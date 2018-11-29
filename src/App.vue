@@ -11,6 +11,7 @@
 		overflow: hidden;
 		display: flex;
 		flex-grow: 1;
+		margin: 0;
 	}
 
 	#app {
