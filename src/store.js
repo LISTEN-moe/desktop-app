@@ -9,7 +9,12 @@ export default new Store({
 		user: null,
 		token: null,
 		websocket: null,
-		playing: false
+		playing: false,
+		// Settings
+		preferRomaji: false,
+		eventStarts: true,
+		enableGaps: true,
+		smallAlbumArt: false
 	},
 	mutations: {
 		loggedIn(state, payload) {
@@ -55,6 +60,20 @@ export default new Store({
 		},
 		playing(state, payload) {
 			state.playing = payload;
+		},
+
+		// Settings
+		preferRomaji(state, payload) {
+			state.preferRomaji = payload;
+		},
+		eventStarts(state, payload) {
+			state.eventStarts = payload;
+		},
+		enableGaps(state, payload) {
+			state.enableGaps = payload;
+		},
+		smallAlbumArt(state, payload) {
+			state.smallAlbumArt = payload;
 		}
 	},
 	actions: {
@@ -67,6 +86,19 @@ export default new Store({
 			commit('token', null);
 			commit('user', null);
 			commit('loggedIn', false);
+		},
+		setState({ commit }, { option, value }) {
+			commit(option, value);
+			localStorage.setItem(option, value);
+		},
+		setInitialState({ commit, dispatch }) {
+			const whatToPopulate = ['preferRomaji', 'eventStarts', 'enableGaps', 'smallAlbumArt'];
+
+			for (const key of whatToPopulate) {
+				const storageValue = localStorage.getItem(key);
+				if (storageValue && storageValue === 'false') dispatch('setState', { option: key, value: false });
+				else dispatch('setState', { option: key, value: true });
+			}
 		}
 	}
 });
