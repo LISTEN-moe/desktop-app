@@ -41,6 +41,7 @@
 
 <script>
 import user from '@/gql/queries/user.gql';
+import { ipcRenderer } from 'electron';
 
 export default {
 	async mounted() {
@@ -63,6 +64,11 @@ export default {
 			} catch {}
 		}
 		this.$store.dispatch('setInitialState');
+
+		ipcRenderer.on('playerOptionsChange', (event, arg) => {
+			const [option, value] = arg;
+			this.$store.dispatch('setState', { option, value });
+		});
 	}
 };
 </script>

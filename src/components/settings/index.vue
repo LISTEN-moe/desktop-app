@@ -53,11 +53,8 @@ import Toggle from '@/components/toggle';
 import { remote, ipcRenderer } from 'electron';
 
 export default {
-	components: { Toggle },
-	data() {
-		return {
-			changed: false
-		};
+	components: {
+		Toggle
 	},
 	computed: {
 		preferRomaji() {
@@ -75,12 +72,11 @@ export default {
 	},
 	methods: {
 		setOption(option) {
-			this.changed = true;
 			const currentValue = this.$store.state[option];
 			this.$store.dispatch('setState', { option, value: !currentValue });
+			ipcRenderer.send('settingsChange', [option, !currentValue]);
 		},
 		closeWindow() {
-			if (this.changed) ipcRenderer.send('reload');
 			return remote.getCurrentWindow().close();
 		}
 	}

@@ -38,9 +38,7 @@ function createWindow() {
 	});
 
 	ipcMain.on('loginModal', () => {
-		if (loginModal) {
-			return loginModal.show();
-		}
+		if (loginModal) return loginModal.show();
 
 		loginModal = new BrowserWindow({
 			width: 350,
@@ -57,9 +55,7 @@ function createWindow() {
 			loginModal.loadURL('app://./index.html#login');
 		}
 
-		loginModal.once('ready-to-show', () => {
-			loginModal.show();
-		});
+		loginModal.once('ready-to-show', () => loginModal.show());
 
 		loginModal.once('close', () => {
 			loginModal = null;
@@ -67,9 +63,7 @@ function createWindow() {
 	});
 
 	ipcMain.on('settingsModal', () => {
-		if (settingsModal) {
-			return settingsModal.show();
-		}
+		if (settingsModal) return settingsModal.show();
 
 		settingsModal = new BrowserWindow({
 			width: 500,
@@ -86,18 +80,16 @@ function createWindow() {
 			settingsModal.loadURL('app://./index.html#settings');
 		}
 
-		settingsModal.once('ready-to-show', () => {
-			settingsModal.show();
-		});
+		settingsModal.once('ready-to-show', () => settingsModal.show());
 
 		settingsModal.once('close', () => {
 			settingsModal = null;
 		});
 	});
 
-	ipcMain.on('reload', () => {
-		win.reload();
-	});
+	ipcMain.on('reload', () => win.reload());
+
+	ipcMain.on('settingsChange', (_, arg) => win.webContents.send('playerOptionsChange', arg));
 }
 
 app.on('window-all-closed', () => {
