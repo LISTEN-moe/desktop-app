@@ -1,0 +1,22 @@
+mutation login($username: String!, $password: String!) {
+	login(username: $username, password: $password) {
+		user {
+			uuid
+			username
+			displayName
+			avatarImage
+			bannerImage
+			bio
+			roles {
+				name
+				slug
+				color
+				songRequests
+			}
+			additionalSongRequests
+			uploadLimit
+		}
+		token,
+		mfa
+	}
+}

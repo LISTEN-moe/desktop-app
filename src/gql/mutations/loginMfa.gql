@@ -1,0 +1,21 @@
+mutation loginMFA($token: String!) {
+	loginMFA(token: $token) {
+		user {
+			uuid
+			username
+			displayName
+			avatarImage
+			bannerImage
+			bio
+			roles {
+				name
+				slug
+				color
+				songRequests
+			}
+			additionalSongRequests
+			uploadLimit
+		}
+		token
+	}
+}

@@ -1,5 +1,6 @@
 <style lang="scss" scoped>
 	@import "@/assets/styles/_colors.scss";
+
 	div.playerContainer {
 		display: flex;
 		flex-grow: 1;
@@ -147,7 +148,6 @@
 		}
 
 		&.mini {
-			// position: absolute;
 			max-width: 400px;
 			z-index: 99;
 			width: 100%;
@@ -258,10 +258,11 @@
 </template>
 
 <script>
+import favoriteSong from '@/gql/mutations/favoriteSong.gql';
+import checkFavorite from '@/gql/queries/checkFavorite.gql';
 import Budicon from '@/components/icons/budicon';
 import Marquee from '@/components/marquee';
-/* import favoriteSong from '@/gql/mutations/favoriteSong';
-import checkFavorite from '@/gql/queries/checkFavorite'; */
+import { ipcRenderer } from 'electron';
 
 const MEDIA_ELEMENT_NODES = new WeakMap();
 
@@ -398,14 +399,14 @@ export default {
 			return null;
 		}
 	},
-	/* watch: {
+	watch: {
 		async websocket() {
 			if (this.loggedIn) {
 				await this.checkFavorite();
 			}
 			if (this.$refs && this.$refs.slider) this.$nextTick(() => this.$refs.slider.refresh());
 		}
-	}, */
+	},
 	mounted() {
 		this.volume = process.browser ? window.localStorage ? localStorage.getItem('volume') ? localStorage.getItem('volume') * 100 : 50 : 50 : 50;
 
@@ -438,7 +439,7 @@ export default {
 			player.volume = val / 100;
 			process.browser ? window.localStorage ? localStorage.setItem('volume', val / 100) : null : null; // eslint-disable-line
 		},
-		/* async checkFavorite() {
+		async checkFavorite() {
 			if (!this.websocket) return;
 			if (this.websocket.song.favorite) return;
 
@@ -452,13 +453,15 @@ export default {
 					return;
 				}
 			} catch (error) {
-				this.$store.dispatch('alert', { message: error.message, error: true, duration: 5000 });
+				// TODO: Proper feedback
+				/* this.$store.dispatch('alert', { message: error.message, error: true, duration: 5000 }); */
 			}
 
 			this.websocket.song.favorite = true;
 			this.$forceUpdate();
-		}, */
+		},
 		togglePlaying() {
+			if (!this.loggedIn) ipcRenderer.send('loginModal');
 			if (!AUDIO_CONTEXT) {
 				AUDIO_CONTEXT = new AudioContext();
 				if (MEDIA_ELEMENT_NODES.has(this.audio.audio)) {
@@ -499,7 +502,7 @@ export default {
 			const isKpop = this.radioType === 'kpop' ? 'kpop/' : '';
 			return `https://listen.moe/${isKpop}stream`;
 		},
-		/* async toggleFavorite() {
+		async toggleFavorite() {
 			try {
 				await this.$apollo.mutate({
 					mutation: favoriteSong,
@@ -510,9 +513,10 @@ export default {
 				this.websocket.song.favorite = !Boolean(this.websocket.song.favorite);
 				this.$forceUpdate();
 			} catch (error) {
-				this.$store.dispatch('alert', { message: error.message, error: true, duration: 5000 });
+				// TODO: Proper feedback
+				/* this.$store.dispatch('alert', { message: error.message, error: true, duration: 5000 }); */
 			}
-		} */
+		}
 	}
 };
 </script>

@@ -1,0 +1,3 @@
+query checkFavorite($songs: [Int!]!) {
+	checkFavorite(songs: $songs)
+}

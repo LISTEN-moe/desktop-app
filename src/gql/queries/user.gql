@@ -1,0 +1,23 @@
+query user($username: String!) {
+	user(username: $username) {
+		uuid
+		username
+		displayName
+		avatarImage
+		bannerImage
+		bio
+		roles {
+			name
+			slug
+		}
+		favorites {
+			count
+		}
+		uploads {
+			count
+		}
+		requests {
+			count
+		}
+	}
+}

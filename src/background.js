@@ -1,9 +1,10 @@
-import { app, protocol, BrowserWindow, shell } from 'electron';
+import { app, protocol, BrowserWindow, shell, ipcMain } from 'electron';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Global reference because javascript GC
 let win;
+let loginModal;
 
 protocol.registerStandardSchemes(['app'], { secure: true });
 function createWindow() {
@@ -21,6 +22,11 @@ function createWindow() {
 		win.loadURL('app://./index.html');
 	}
 
+	win.once('ready-to-show', () => {
+		win.show();
+		win.focus();
+	});
+
 	win.on('closed', () => {
 		win = null;
 	});
@@ -28,6 +34,35 @@ function createWindow() {
 	win.webContents.on('will-navigate', (event, url) => {
 		event.preventDefault();
 		shell.openExternal(url);
+	});
+
+	ipcMain.on('loginModal', () => {
+		if (loginModal) {
+			return loginModal.show();
+		}
+
+		loginModal = new BrowserWindow({
+			width: 350,
+			height: 500,
+			frame: false,
+			transparent: true,
+			parent: win,
+			show: false
+		});
+
+		if (isDevelopment || process.env.IS_TEST) {
+			loginModal.loadURL(`${process.env.WEBPACK_DEV_SERVER_URL}#/login`);
+		} else {
+			loginModal.loadURL('app://./index.html#login');
+		}
+
+		loginModal.once('ready-to-show', () => {
+			loginModal.show();
+		});
+
+		loginModal.once('close', () => {
+			loginModal = null;
+		});
 	});
 }
 

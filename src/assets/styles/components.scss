@@ -1,0 +1,173 @@
+@import "@/assets/styles/_colors.scss";
+
+div.card {
+	position: relative;
+	-webkit-transition: all .15s ease;
+	transition: all .15s ease;
+	border: 0 !important;
+	-ms-flex-direction: column;
+	-webkit-box-direction: normal;
+	-webkit-box-orient: vertical;
+	background-clip: border-box;
+	background-color: #fff;
+	border-radius: .25rem;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	word-wrap: break-word;
+
+	.card-body {
+		-ms-flex: 1 1 auto;
+		-webkit-box-flex: 1;
+		flex: 1 1 auto;
+		padding: 1.5rem;
+		padding-top: 3rem !important;
+		padding-bottom: 3rem !important;
+		max-height: 600px;
+		overflow: scroll;
+	}
+
+	.card-footer {
+		flex: 1 1 auto;
+		padding: 1.5rem;
+		align-self: flex-end;
+	}
+
+	&.hover:hover {
+		-webkit-transform: translateY(-.5rem);
+		-webkit-transition: all .15s ease;
+		transform: translateY(-.5rem);
+		transition: all .15s ease;
+	}
+
+	&.dark {
+		background-color: #1b1d27;
+	}
+}
+
+.shadow {
+	border-radius: 1px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 1px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	z-index: 10;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	.backdrop {
+		position: absolute;
+		width: 100vw;
+		height: 100vh;
+		top: 0;
+		left: 0;
+		background-color: rgba(0,0,0,.3);
+		z-index: -1
+	}
+
+	.form {
+		width: 380px;
+		height: 450px;
+	}
+}
+
+input, textarea {
+	-webkit-box-shadow: none;
+	-webkit-transition: all .2s cubic-bezier(.68,-.55,.265,1.55);
+	background-clip: padding-box;
+	background-color: #fff;
+	border: 1px solid #cad1d7;
+	border-radius: .25rem;
+	box-shadow: none;
+	color: #8898aa;
+	display: block;
+	font-size: 1rem;
+	height: calc(2.75rem + 2px);
+	line-height: 1.5;
+	padding: .625rem .75rem;
+	transition: all .2s cubic-bezier(.68,-.55,.265,1.55);
+	width: 100%;
+
+	font-size: .875rem;
+
+	border: 0;
+	box-shadow: none;
+	margin-bottom: 1rem;
+
+	box-shadow: 0 1px 3px rgba(50,50,93,.15), 0 1px 0 rgba(0,0,0,.02);
+	background: #262838;
+}
+
+button {
+	-webkit-appearance: button;
+	user-select: none;
+	vertical-align: middle;
+	white-space: nowrap;
+	font-weight: 600;
+	line-height: 1.5;
+	padding: .625rem 1.25rem;
+	text-align: center;
+	border: 1px solid transparent;
+	border-radius: .15rem;
+	display: inline-block;
+	font-size: .875rem;
+	position: relative;
+	transition: all .15s ease;
+	cursor: pointer;
+
+	&.primary {
+		background-color: #1b1d27;
+		border-color: #262838;
+		color: #c7ccd8;
+
+		&.light {
+			background: #262838;
+		}
+		&:hover {
+			background-color: $basePink;
+			border-color: $basePink;
+			color: white;
+		}
+	}
+
+	&.noStyle {
+		-webkit-appearance: none;
+		font-weight: normal;
+		line-height: 1;
+		padding: 0;
+		border: none;
+		border-radius: 0;
+		text-transform: none;
+		background: none;
+	}
+
+	&:focus {
+		outline: none;
+	}
+
+	> svg {
+		width: 18px;
+	}
+}
+
+button.noStyle {
+	color: $textColor;
+	margin-right: 1rem;
+}
+
+select {
+	color: $textColor;
+	background: #1b1d27;
+	border-color: #262838;
+	padding: .625rem 1.25rem;
+	outline: none;
+	user-select: none;
+}

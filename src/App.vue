@@ -1,5 +1,6 @@
 <style lang="scss">
 	@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+	@import "@/assets/styles/components.scss";
 
 	* {
 		box-sizing: border-box;
@@ -30,22 +31,33 @@
 			ref="audio"
 			crossorigin="anonymous"
 			preload="auto" />
-		<Player :audio="$refs" />
+		<router-view :audio="$refs" />
 	</div>
 </template>
 
 <script>
-import WebSocketWorker from 'workerize-loader!@/assets/worker/websocket.worker.js';
-import Player from '@/components/player';
+import user from '@/gql/queries/user.gql';
 
 export default {
-	components: { Player },
-	mounted() {
-		const worker = new WebSocketWorker();
-		worker.onmessage = message => {
-			if (message.data.method) return;
-			this.$store.commit('websocket', message.data);
-		};
+	async mounted() {
+		const token = localStorage.getItem('token');
+		if (token) {
+			try {
+				const { data } = await this.$apollo.query({
+					query: user,
+					variables: {
+						username: '@me'
+					}
+				});
+
+				if (data.user) {
+					this.$store.commit('user', data.user);
+					this.$store.commit('loggedIn', true);
+					this.$store.commit('token', token);
+					this.$forceUpdate();
+				}
+			} catch {}
+		}
 	}
 };
 </script>
