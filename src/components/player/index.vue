@@ -2,36 +2,90 @@
 	@import "@/assets/styles/_colors.scss";
 
 	div.playerContainer {
-		display: flex;
-		flex-grow: 1;
-		align-items: center;
-		-webkit-transition: transform 1s linear;
-		-moz-transition: transform 1s linear;
-		-ms-transition: transform 1s linear;
-		-o-transition: transform 1s linear;
-		transition: transform 1s linear;
+		display: grid;
+		grid-template-columns: 64px 1fr 64px 64px auto;
+		grid-template-rows: auto 64px auto;
+		grid-template-areas:
+			". . . . coverArt"
+			"playButton player favoriteButton volumeButton coverArt"
+			". . . . coverArt";
+		width: 100vw;
 
-		> div {
-			background: #1d1f2b;
-			width: 64px;
-			height: 64px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
+		&.gaps { grid-gap: 5px; }
 
-			&.favoriteButton, &.albumCover {
-				margin-right: 10px;
+		.playButton { grid-area: playButton; }
+		.player {
+			grid-area: player;
+			-webkit-app-region: drag;
+			position: relative;
+			display: grid;
+			grid-template-columns: 100%;
+			grid-template-rows: auto auto auto;
+
+			// Span and links color
+			color: #c7ccd8;
+			a {
+				color: $basePink;
+				text-decoration: none;
+				-webkit-app-region: no-drag;
+
+				&.source {
+					color: $textColor;
+					text-decoration: underline;
+				}
 			}
 
-			> svg {
-				width: 24px;
-				height: 24px;
+			> div {
+				padding: 0px 10px;
+				z-index: 1;
 			}
 
-			&.albumContainer {
-				background: none;
-				width: 250px;
+			.artistContainer {
+				padding-top: 5px;
+				text-align: left;
+			}
 
+			.titleContainer {
+				text-align: left;
+			}
+
+			.info {
+				max-height: 22px;
+				background: linear-gradient(to right, rgba(0,0,0,0) 0%,rgba(0,0,0,0.3) 22%,rgba(0,0,0,0.3) 50%,rgba(0, 0, 0, 0.3) 80%,rgba(0,0,0,0) 100%);
+				.requestedBy, .eventTime {
+					font-size: .8rem;
+					& span, a {
+						font-size: .8rem;
+					}
+					& a { font-weight: 700; }
+				}
+			}
+
+			canvas {
+				position: absolute;
+				pointer-events: none;
+				width: 100%;
+				left: 0;
+				bottom: 0;
+				height: 64px;
+				z-index: 0;
+			}
+		}
+		.favoriteButton { grid-area: favoriteButton; }
+		.volumeButton { grid-area: volumeButton; }
+		.albumContainer {
+			grid-area: coverArt;
+			max-width: 64px;
+			background: none;
+			a {
+				display: block;
+				max-height: 64px;
+
+				img { max-width: 64px; }
+			}
+
+			&.big {
+				max-width: 250px;
 				div.pictureContainer {
 					img {
 						width: 200px;
@@ -42,162 +96,28 @@
 			}
 		}
 
-		.volumeContainer {
-			position: relative;
-
-			.sliderContainer {
-				position: absolute;
-				width: 200px;
-				bottom: -50px;
-				left: -130px;
-				opacity: 0;
-				pointer-events: none;
-
-				&.active {
-					opacity: 1;
-					pointer-events: auto;
-				}
-			}
-		}
-
-		.player {
-			-webkit-transition: transform 1s linear;
-			-moz-transition: transform 1s linear;
-			-ms-transition: transform 1s linear;
-			-o-transition: transform 1s linear;
-			transition: transform 1s linear;
-			flex: 1 0 10px;
-			position: relative;
-			display: block;
-			padding: 8px 5px;
-			-webkit-app-region: drag;
-
-			.artistContainer, .titleContainer {
-				display: flex;
-				color: #c7ccd8;
-
-				a {
-					color: $basePink;
-					text-decoration: none;
-					-webkit-app-region: no-drag;
-				}
-
-				a.source {
-					color: $textColor;
-					text-decoration: underline;
-				}
-			}
-
-			img.platelet {
-				position: absolute;
-				top: -175px;
-				right: -25px;
-				pointer-events: none;
-			}
-
-			canvas {
-				width: 100%;
-				position: absolute;
-				bottom: .5px;
-				transform: scale3d(1, 1, 1);
-				left: 0;
-				height: 64px;
-			}
-
-			.info {
-				position: absolute;
-				bottom: 0;
-				z-index: 1;
-				width: 100%;
-				height: 25%;
-				left: 0;
-				display: flex;
-				color: $textColor;
-				background: linear-gradient(to right, rgba(0,0,0,0) 0%,rgba(0,0,0,0.5) 22%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.5) 80%,rgba(0,0,0,0) 100%);
-
-				div.listeners {
-					> svg {
-						width: 15px;
-						margin-right: 2px;
-					}
-				}
-
-				div.spacer { flex: 1 0 10px; }
-				a {
-					color: $basePink;
-					font-weight: bold;
-					text-decoration: none;
-				}
-
-				.eventTime span {
-					color: $basePink;
-				}
-
-				.text {
-					position: absolute;
-					width: 100%;
-					text-align: center;
-					font-size: .7em;
-					bottom: 2px;
-				}
-			}
-		}
-
-		.historyContainer {
-			position: absolute;
-		}
-
-		&.mini {
-			max-width: 400px;
-			z-index: 99;
-			width: 100%;
-
-			> div {
-				min-width: 48px;
-				width: 48px;
-				height: 48px;
-				margin: 0;
-
-				&.player {
-					padding: 0;
-					width: 300px;
-
-					> div.artistContainer {
-						line-height: 1rem;
-						padding-top: 5px;
-					}
-				}
-
-				&.albumContainer {
-					div.pictureContainer {
-						a {
-							img {
-								max-width: 48px;
-								display: block;
-								box-shadow: none;
-							}
-						}
-					}
-				}
-				&.shadow {
-					box-shadow: none;
-				}
+		> div {
+			background: #1d1f2b;
+			> svg {
+				margin-top: 20px;
+				width: 24px;
+				height: 24px;
 			}
 		}
 	}
+
 </style>
 
 <template>
 	<div class="playerContainer"
-		:class="{ mini, shadow: mini }">
-		<div class="shadow">
+		:class="{ gaps: enableGaps }">
+		<div class="playButton shadow">
 			<Budicon :icon="playing ? 'pause' : 'play'"
 				y="-2"
 				@click.native.stop.prevent="togglePlaying" />
 		</div>
 		<div class="player shadow">
-			<canvas v-if="!mini"
-				ref="canvas" />
+			<canvas ref="canvas" />
 			<Marquee v-if="currentArtists"
 				ref="marquee"
 				class="artistContainer">
@@ -223,12 +143,7 @@
 						class="source">[{{ currentSource.name }}]</a>
 				</span>
 			</Marquee>
-			<!-- <img v-if="!mini"
-				class="platelet is-hidden-touch"
-				src="~/assets/images/girls/platelet.png"> -->
-			<div v-if="!mini"
-				class="info">
-				<div class="spacer" />
+			<div class="info">
 				<div v-if="currentRequester"
 					class="requestedBy text">
 					Requested by <a :href="currentRequester.link">{{ currentRequester.name }}</a>
@@ -244,10 +159,15 @@
 				:icon="websocket.song.favorite ? 'filledStar' : 'star'"
 				@click.native="toggleFavorite" />
 		</div>
+		<div class="volumeButton shadow">
+			<Budicon icon="volume"
+				@click.native="setVolume(100)" />
+		</div>
 
-		<div v-if="currentAlbum && albumCover"
-			class="albumContainer">
-			<div class="pictureContainer">
+		<div class="albumContainer"
+			:class="{ big: !smallAlbumArt }">
+			<div v-if="currentAlbum && albumCover"
+				class="pictureContainer shadow">
 				<a :href="currentAlbum.link">
 					<img class="shadow"
 						:src="`https://cdn.listen.moe/covers/${albumCover}`">
@@ -290,10 +210,6 @@ export default {
 		audio: {
 			'type': Object,
 			'default': () => {}
-		},
-		mini: {
-			'type': Boolean,
-			'default': false
 		}
 	},
 	data() {
@@ -397,6 +313,15 @@ export default {
 				return album;
 			}
 			return null;
+		},
+		eventStarts() {
+			return this.$store.state.eventStarts;
+		},
+		enableGaps() {
+			return this.$store.state.enableGaps;
+		},
+		smallAlbumArt() {
+			return this.$store.state.smallAlbumArt;
 		}
 	},
 	watch: {
@@ -435,6 +360,7 @@ export default {
 	},
 	methods: {
 		setVolume(val) {
+			ipcRenderer.send('settingsModal');
 			const player = this.audio.audio;
 			player.volume = val / 100;
 			process.browser ? window.localStorage ? localStorage.setItem('volume', val / 100) : null : null; // eslint-disable-line
