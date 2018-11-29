@@ -186,11 +186,12 @@
 		<div class="favoriteButton shadow">
 			<Budicon v-if="websocket"
 				:icon="websocket.song.favorite ? 'filledStar' : 'star'"
-				@click.native="toggleFavorite" />
+				@click.native.stop.prevent="toggleFavorite" />
 		</div>
-		<div class="volumeButton shadow">
+		<div class="volumeButton shadow"
+			@wheel.stop.prevent="scrollVolume">
 			<Budicon icon="volume"
-				@click.native="setVolume(100)" />
+				@click.native.stop.prevent="openSettings" />
 		</div>
 
 		<div class="albumContainer"
@@ -358,7 +359,7 @@ export default {
 			if (this.loggedIn) {
 				await this.checkFavorite();
 			}
-			if (this.$refs && this.$refs.slider) this.$nextTick(() => this.$refs.slider.refresh());
+			this.updateDiscordActivity();
 		}
 	},
 	mounted() {
@@ -388,11 +389,36 @@ export default {
 		if (!this.audio.audio.paused) MUSIC_VISUALS.start();
 	},
 	methods: {
-		setVolume(val) {
+		openSettings() {
 			ipcRenderer.send('settingsModal');
+		},
+		scrollVolume({ deltaY }) {
 			const player = this.audio.audio;
-			player.volume = val / 100;
-			process.browser ? window.localStorage ? localStorage.setItem('volume', val / 100) : null : null; // eslint-disable-line
+			if (deltaY > 0) {
+				if (player.volume === 0.0) return;
+				player.volume = (player.volume - 0.1).toFixed(1);
+			} else if (deltaY < 0) {
+				if (player.volume === 1.0) return;
+				player.volume = (player.volume + 0.1).toFixed(1);
+			}
+			process.browser ? window.localStorage ? localStorage.setItem('volume', player.volume) : null : null;
+		},
+		updateDiscordActivity() {
+			const artists = this.currentArtists.reduce((out, artist) => {
+				out += `${this.preferRomaji ? artist.nameRomaji ? artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji}${this.currentArtists.length > 1 ? ', ' : ''}`;
+				return out;
+			}, '');
+			this.$store.dispatch('updateDiscordActivity', {
+				details: this.currentSong.name.length >= 50 ? this.currentSong.name.substring(0, 50) : this.currentSong.name,
+				state: artists.length >= 50 ? artists.substring(0, 50) : artists,
+				startTimestamp: new Date(this.websocket.startTime).getTime(),
+				endTimestamp: new Date(this.websocket.startTime).getTime() + new Date(this.websocket.song.duration * 1000).getTime(),
+				largeImageKey: 'jpop',
+				largeImageText: 'LISTEN.moe',
+				smallImageKey: 'play',
+				smallImageText: 'Playing',
+				instance: false
+			});
 		},
 		async checkFavorite() {
 			if (!this.websocket) return;

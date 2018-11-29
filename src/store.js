@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuex, { Store } from 'vuex';
+const { Client } = require('discord-rpc');
+const rpc = new Client({ transport: 'ipc' });
 
 Vue.use(Vuex);
 
@@ -99,6 +101,15 @@ export default new Store({
 				if (storageValue && storageValue === 'false') dispatch('setState', { option: key, value: false });
 				else dispatch('setState', { option: key, value: true });
 			}
+		},
+		async initRPC() {
+			rpc.transport.once('close', () => {
+				console.error('Discord RPC disconnected');
+			});
+			await rpc.login({ clientId: '383375119827075072' });
+		},
+		updateDiscordActivity(_, activity) {
+			rpc.setActivity(activity);
 		}
 	}
 });

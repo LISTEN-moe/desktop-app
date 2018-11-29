@@ -41,10 +41,11 @@
 
 <script>
 import user from '@/gql/queries/user.gql';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 
 export default {
 	async mounted() {
+		this.$store.dispatch('initRPC');
 		const token = localStorage.getItem('token');
 		if (token) {
 			try {
@@ -70,6 +71,9 @@ export default {
 		});
 		ipcRenderer.on('playerOptionsChange', (_, arg) => {
 			const [option, value] = arg;
+			const electronWindow = remote.getCurrentWindow();
+			if (option === 'smallAlbumArt' && value) electronWindow.setSize(electronWindow.getBounds().width, 80, true);
+			else if (option === 'smallAlbumArt' && !value) electronWindow.setSize(electronWindow.getBounds().width, 230, true);
 			this.$store.dispatch('setState', { option, value });
 		});
 	}

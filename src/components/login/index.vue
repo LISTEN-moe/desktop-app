@@ -21,16 +21,16 @@
 				<input v-model="username"
 					type="text"
 					placeholder="Username / Email"
-					@keyup.enter="login">
+					@keyup.enter.stop.prevent="login">
 				<input v-model="password"
 					type="password"
 					placeholder="Password"
-					@keyup.enter="login">
+					@keyup.enter.stop.prevent="login">
 
 				<button class="noStyle"
-					@click="showRegister = true">Create account</button>
+					@click.stop.prevent="showRegister = true">Create account</button>
 				<button class="primary light"
-					@click="login">Login</button>
+					@click.stop.prevent="login">Login</button>
 			</div>
 		</div>
 
@@ -50,12 +50,12 @@
 				<input v-model="repassword"
 					type="password"
 					placeholder="Password again"
-					@keyup.enter="login">
+					@keyup.enter.stop.prevent="login">
 
 				<button class="noStyle"
-					@click="showRegister = false">Back to login</button>
+					@click.stop.prevent="showRegister = false">Back to login</button>
 				<button class="primary light"
-					@click="register">Create account</button>
+					@click.stop.prevent="register">Create account</button>
 			</div>
 		</div>
 
@@ -66,11 +66,11 @@
 				<input v-model="mfaToken"
 					type="text"
 					placeholder="2FA Code"
-					@keyup.enter="loginMfa">
+					@keyup.enter.stop.prevent="loginMfa">
 				<button class="noStyle"
-					@click="showRegister = false">Back to login</button>
+					@click.stop.prevent="showRegister = false">Back to login</button>
 				<button class="primary light"
-					@click="loginMfa">Login</button>
+					@click.stop.prevent="loginMfa">Login</button>
 			</div>
 		</div>
 	</div>

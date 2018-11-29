@@ -42,7 +42,7 @@
 					@clicked="setOption('smallAlbumArt')">Small album art</Toggle>
 
 				<button class="primary light closeButton"
-					@click="closeWindow">Close</button>
+					@click.stop.prevent="closeWindow">Close</button>
 			</div>
 		</div>
 	</div>

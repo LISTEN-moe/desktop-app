@@ -32,7 +32,7 @@
 		<div class="indicator" />
 		<button class="primary"
 			:class="{ active, isRight, light }"
-			@click="$emit('clicked')">
+			@click.stop.prevent="$emit('clicked')">
 			<slot />
 		</button>
 	</div>

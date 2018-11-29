@@ -17,9 +17,9 @@
 		<div ref="content"
 			:style="{ transform: `translate3d(-${translated}px, 0, 0)` }"
 			class="content"
-			@mouseenter="startMoving"
-			@mouseleave="reset"
-			@mousedown="clearTimers">
+			@mouseenter.stop.prevent="startMoving"
+			@mouseleave.stop.prevent="reset"
+			@mousedown.stop.prevent="clearTimers">
 			<slot />
 		</div>
 	</div>
