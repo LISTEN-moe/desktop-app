@@ -80,7 +80,7 @@
 import login from '@/gql/mutations/login.gql';
 import register from '@/gql/mutations/register.gql';
 import loginMfa from '@/gql/mutations/loginMfa.gql';
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import { onLogin } from '@/vue-apollo';
 
 export default {
@@ -132,7 +132,6 @@ export default {
 			}
 		},
 		async login() {
-			localStorage.setItem('test', 1234);
 			if (!this.username || !this.password) {
 				// TODO: Proper feedback
 				/* this.$store.dispatch('alert', { message: 'Can\'t log in without both fields, you special snowflake ❄', error: true, duration: 5000 }); */
@@ -178,11 +177,12 @@ export default {
 
 			return remote.getCurrentWindow().close();
 		},
-		async saveLoginData(response) {
-			this.$store.dispatch('login', { token: response.token, user: response.user });
+		async saveLoginData({ token, user }) {
+			this.$store.dispatch('login', { token, user });
+			ipcRenderer.send('login', { token, user });
 			// TODO: Proper feedback
 			/* this.$store.dispatch('alert', `Welcome back, ${response.user.displayName}`); */
-			await onLogin(this.$apollo, response.token);
+			await onLogin(this.$apollo, token);
 		},
 		clearInputs() {
 			this.username = null;

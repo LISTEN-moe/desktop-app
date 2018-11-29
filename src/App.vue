@@ -65,7 +65,10 @@ export default {
 		}
 		this.$store.dispatch('setInitialState');
 
-		ipcRenderer.on('playerOptionsChange', (event, arg) => {
+		ipcRenderer.on('login', (_, { token, user }) => {
+			this.$store.dispatch('login', { token, user });
+		});
+		ipcRenderer.on('playerOptionsChange', (_, arg) => {
 			const [option, value] = arg;
 			this.$store.dispatch('setState', { option, value });
 		});

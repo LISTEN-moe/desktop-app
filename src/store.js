@@ -91,7 +91,7 @@ export default new Store({
 			commit(option, value);
 			localStorage.setItem(option, value);
 		},
-		setInitialState({ commit, dispatch }) {
+		setInitialState({ dispatch }) {
 			const whatToPopulate = ['preferRomaji', 'eventStarts', 'enableGaps', 'smallAlbumArt'];
 
 			for (const key of whatToPopulate) {
