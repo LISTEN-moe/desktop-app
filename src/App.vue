@@ -9,7 +9,7 @@
 	body {
 		height: 100vh;
 		overflow: hidden;
-		margin: 0;
+		margin: 1px;
 	}
 
 	#app {
@@ -18,6 +18,8 @@
 		-moz-osx-font-smoothing: grayscale;
 		text-align: center;
 		color: #2c3e50;
+		-webkit-user-select: none;
+  		-webkit-app-region: drag;
 	}
 
 	div, span, h1, h2, a, label {
