@@ -11,6 +11,11 @@
 			". . . . coverArt";
 		width: 100vw;
 
+		&.hasAlbumArt {
+			&.big {
+				grid-template-rows: 64px 64px 64px;
+			}
+		}
 		&.gaps { grid-gap: 5px; }
 
 		.playButton { grid-area: playButton; }
@@ -110,7 +115,7 @@
 
 <template>
 	<div class="playerContainer"
-		:class="{ gaps: enableGaps }">
+		:class="{ gaps: enableGaps, big: !smallAlbumArt, hasAlbumArt: currentAlbum && albumCover }">
 		<div class="playButton shadow">
 			<Budicon :icon="playing ? 'pause' : 'play'"
 				y="-2"
