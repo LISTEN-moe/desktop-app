@@ -4,16 +4,17 @@
 	div.playerContainer {
 		display: grid;
 		grid-template-columns: 64px 1fr 64px 64px auto;
-		grid-template-rows: auto 64px auto;
-		grid-template-areas:
-			". . . . coverArt"
-			"playButton player favoriteButton volumeButton coverArt"
-			". . . . coverArt";
+		grid-template-rows: 64px;
+		grid-template-areas: "playButton player favoriteButton volumeButton coverArt";
 		width: 100vw;
 
 		&.hasAlbumArt {
 			&.big {
 				grid-template-rows: 64px 64px 64px;
+				grid-template-areas:
+					". . . . coverArt"
+					"playButton player favoriteButton volumeButton coverArt"
+					". . . . coverArt";
 			}
 		}
 		&.gaps { grid-gap: 5px; }
