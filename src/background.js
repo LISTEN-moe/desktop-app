@@ -5,6 +5,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 // Global reference because javascript GC
 let win;
 let loginModal;
+let settingsModal;
 
 protocol.registerStandardSchemes(['app'], { secure: true });
 function createWindow() {
@@ -62,6 +63,35 @@ function createWindow() {
 
 		loginModal.once('close', () => {
 			loginModal = null;
+		});
+	});
+
+	ipcMain.on('settingsModal', () => {
+		if (settingsModal) {
+			return settingsModal.show();
+		}
+
+		settingsModal = new BrowserWindow({
+			width: 500,
+			height: 500,
+			frame: false,
+			transparent: true,
+			parent: win,
+			show: false
+		});
+
+		if (isDevelopment || process.env.IS_TEST) {
+			settingsModal.loadURL(`${process.env.WEBPACK_DEV_SERVER_URL}#/settings`);
+		} else {
+			settingsModal.loadURL('app://./index.html#settings');
+		}
+
+		settingsModal.once('ready-to-show', () => {
+			settingsModal.show();
+		});
+
+		settingsModal.once('close', () => {
+			settingsModal = null;
 		});
 	});
 }
