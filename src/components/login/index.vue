@@ -5,6 +5,8 @@
 		overflow: hidden;
 		min-width: 20rem;
 		text-align: center;
+
+		&.mfa input { text-align: center }
 	}
 
 	img {
@@ -61,7 +63,7 @@
 
 		<div v-else-if="showMfa"
 			class="card dark shadow">
-			<div class="card-body">
+			<div class="card-body mfa">
 				<img src="@/assets/images/logo-square-64.png">
 				<input v-model="mfaToken"
 					type="text"
