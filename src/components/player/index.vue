@@ -356,9 +356,7 @@ export default {
 	},
 	watch: {
 		async websocket() {
-			if (this.loggedIn) {
-				await this.checkFavorite();
-			}
+			if (this.loggedIn) await this.checkFavorite();
 			this.updateDiscordActivity();
 		}
 	},
@@ -408,7 +406,7 @@ export default {
 				out += `${this.preferRomaji ? artist.nameRomaji ? artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji}${this.currentArtists.length > 1 ? ', ' : ''}`;
 				return out;
 			}, '');
-			this.$store.dispatch('updateDiscordActivity', {
+			ipcRenderer.send('updateDiscordActivity', {
 				details: this.currentSong.name.length >= 50 ? this.currentSong.name.substring(0, 50) : this.currentSong.name,
 				state: artists.length >= 50 ? artists.substring(0, 50) : artists,
 				startTimestamp: new Date(this.websocket.startTime).getTime(),

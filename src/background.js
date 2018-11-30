@@ -2,13 +2,16 @@ import { app, protocol, BrowserWindow, shell, ipcMain } from 'electron';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
+const { Client } = require('discord-rpc');
+const rpc = new Client({ transport: 'ipc' });
+
 // Global reference because javascript GC
 let win;
 let loginModal;
 let settingsModal;
 
 protocol.registerStandardSchemes(['app'], { secure: true });
-function createWindow() {
+async function createWindow() {
 	win = new BrowserWindow({
 		title: 'LISTEN.MOE - Desktop App',
 		width: 800,
@@ -26,6 +29,8 @@ function createWindow() {
 		win.loadURL('app://./index.html');
 	}
 
+	win.webContents.openDevTools();
+
 	win.once('ready-to-show', () => {
 		win.show();
 		win.focus();
@@ -39,6 +44,10 @@ function createWindow() {
 		event.preventDefault();
 		shell.openExternal(url);
 	});
+
+	await rpc.login({ clientId: '383375119827075072' });
+
+	ipcMain.on('updateDiscordActivity', (_, arg) => rpc.setActivity(arg));
 
 	ipcMain.on('loginModal', () => {
 		if (loginModal) return loginModal.show();
@@ -94,13 +103,13 @@ app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') app.quit();
 });
 
-app.on('activate', () => {
-	if (win === null) createWindow();
+app.on('activate', async () => {
+	if (win === null) await createWindow();
 });
 
 app.on('ready', async () => {
 	if (isDevelopment && !process.env.IS_TEST) await installVueDevtools();
-	createWindow();
+	await createWindow();
 });
 
 if (isDevelopment) {

@@ -45,7 +45,6 @@ import { ipcRenderer, remote } from 'electron';
 
 export default {
 	async mounted() {
-		this.$store.dispatch('initRPC');
 		const token = localStorage.getItem('token');
 		if (token) {
 			try {

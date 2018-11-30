@@ -3602,9 +3602,9 @@ dir-glob@^2.0.0:
     arrify "^1.0.1"
     path-type "^3.0.0"
 
-discord-rpc@discordjs/RPC:
+discord-rpc@iCrawl/RPC#custom:
   version "3.0.1"
-  resolved "https://codeload.github.com/discordjs/RPC/tar.gz/4b1a7ac139f3e2fab7ea9098fc6f24707424ec24"
+  resolved "https://codeload.github.com/iCrawl/RPC/tar.gz/be9d5a28eb9d3c881b62de9dfc78be4230e322fb"
   dependencies:
     node-fetch "^2.3.0"
     ws "^6.1.1"

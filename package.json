@@ -1,8 +1,13 @@
 {
 	"name": "desktop-app",
+	"description": "It's time to ditch other radios",
 	"version": "0.1.0",
 	"main": "background.js",
 	"private": true,
+	"author": {
+		"name": "iCrawl",
+		"email": "icrawltogo@gmail.com"
+	},
 	"scripts": {
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
@@ -11,7 +16,7 @@
 		"postinstall": "electron-builder install-app-deps"
 	},
 	"dependencies": {
-		"discord-rpc": "discordjs/RPC",
+		"discord-rpc": "iCrawl/RPC#custom",
 		"register-scheme": "devsnek/node-register-scheme",
 		"vue": "^2.5.17",
 		"vue-apollo": "^3.0.0-beta.26",
