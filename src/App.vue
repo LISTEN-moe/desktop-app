@@ -62,7 +62,6 @@ export default {
 	},
 	watch: {
 		loggedIn() {
-			this.menu = this.buildMenu();
 			if (this.tray) this.tray.setContextMenu(this.buildMenu());
 			else this.tray = new Tray(join(__static, 'logo.png'));
 		}
