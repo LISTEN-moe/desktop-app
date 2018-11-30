@@ -8,6 +8,11 @@
 		grid-template-areas: "playButton player favoriteButton volumeButton coverArt";
 		width: 100vw;
 
+		-webkit-app-region: drag;
+		a, span, svg, img {
+			-webkit-app-region: no-drag;
+		}
+
 		&.hasAlbumArt {
 			&.big {
 				grid-template-rows: 64px 64px 64px;
@@ -28,7 +33,6 @@
 
 		.player {
 			grid-area: player;
-			-webkit-app-region: drag;
 			position: relative;
 			display: grid;
 			grid-template-columns: 100%;
@@ -101,6 +105,25 @@
 					padding-bottom: 0px;
 				}
 			}
+
+			.settingsIcon {
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 0;
+				transform: scale3d(0.5, 0.5, 1) !important;
+				z-index: 9;
+				transition: opacity .3s ease-in-out;
+				// opacity: 0;
+				// pointer-events: none;
+			}
+
+			/*
+			&:hover .settingsIcon {
+				opacity: 1;
+				pointer-events: auto;
+			}
+			*/
 		}
 
 		.favoriteButton {
@@ -160,6 +183,9 @@
 		</div>
 		<div class="player shadow"
 			:class="{ hasRequester: currentRequester || currentEvent }">
+			<Budicon class="settingsIcon"
+				icon="settings"
+				@click.native.stop.prevent="openSettings" />
 			<canvas ref="canvas" />
 			<Marquee v-if="currentArtists"
 				ref="marquee"
@@ -205,8 +231,7 @@
 		</div>
 		<div class="volumeButton shadow"
 			@wheel.stop.prevent="scrollVolume">
-			<Budicon icon="volume"
-				@click.native.stop.prevent="openSettings" />
+			<Budicon icon="volume" />
 		</div>
 
 		<div class="albumContainer"
