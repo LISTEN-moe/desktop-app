@@ -159,7 +159,7 @@ export default {
 		},
 		mouseup() {
 			this.offset = null;
-			this.mousDown = false;
+			this.mouseDown = false;
 		},
 		drag({ screenX, screenY }) {
 			if (!this.offset || !this.offset.length) return;
