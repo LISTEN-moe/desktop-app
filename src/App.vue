@@ -19,6 +19,10 @@
 		color: #2c3e50;
 	}
 
+	input, div, span, a {
+		outline: none !important;
+	}
+
 	div, span, h1, h2, a, label {
 		font-size: 1rem;
 		font-style: normal;
@@ -42,8 +46,25 @@
 <script>
 import user from '@/gql/queries/user.gql';
 import { ipcRenderer, remote } from 'electron';
+const { Menu, MenuItem } = remote;
 
 export default {
+	data() {
+		return { menu: null };
+	},
+	computed: {
+		loggedIn() {
+			return this.$store.state.loggedIn;
+		},
+		isJpop() {
+			return this.$store.state.isJpop;
+		}
+	},
+	watch: {
+		loggedIn() {
+			this.buildMenu();
+		}
+	},
 	async mounted() {
 		const token = localStorage.getItem('token');
 		if (token) {
@@ -75,6 +96,47 @@ export default {
 			else if (option === 'smallAlbumArt' && !value) electronWindow.setSize(electronWindow.getBounds().width, 230, true);
 			this.$store.dispatch('setState', { option, value });
 		});
+
+		this.buildMenu();
+
+		window.addEventListener('contextmenu', e => {
+			e.preventDefault();
+			this.menu.popup({ window: remote.getCurrentWindow() });
+		}, false);
+	},
+	methods: {
+		buildMenu() {
+			const app = this;
+			this.menu = new Menu();
+			this.menu.append(new MenuItem(
+				{
+					label: 'Switch to kpop',
+					type: 'checkbox',
+					checked: this.isJpop ? false : true,
+					click() {
+						// We toggle the radio type
+						app.buildMenu();
+					}
+				}
+			));
+			this.menu.append(new MenuItem(
+				{
+					label: 'Settings', click() {
+						ipcRenderer.send('settingsModal');
+					}
+				}
+			));
+			this.menu.append(new MenuItem({ type: 'separator' }));
+			this.menu.append(new MenuItem(
+				{
+					label: this.loggedIn ? 'Logout' : 'Login', click() {
+						if (app.loggedIn) app.$store.dispatch('logout');
+						else ipcRenderer.send('loginModal');
+						app.buildMenu();
+					}
+				}
+			));
+		}
 	}
 };
 </script>
