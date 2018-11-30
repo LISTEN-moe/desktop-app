@@ -90,7 +90,6 @@ export default new Store({
 			commit('token', null);
 			commit('user', null);
 			commit('loggedIn', false);
-			localStorage.removeItem('token');
 		},
 		setState({ commit }, { option, value }) {
 			commit(option, value);

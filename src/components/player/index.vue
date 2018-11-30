@@ -27,7 +27,7 @@
 		}
 
 		.player {
-			-webkit-app-region: drag;
+			/* -webkit-app-region: drag; */
 			a {
 				-webkit-app-region: no-drag;
 			}

@@ -37,9 +37,10 @@
 <template>
 	<div id="app"
 		ref="app"
-		@mousedown.stop="mouseDown = true"
-		@mouseup.stop="mouseDown = false"
-		@mousemove.stop="drag">
+		@mousedown.stop.prevent="mousedown"
+		@mouseup.stop.prevent="mouseup"
+		@dragstart.stop.prevent="false"
+		@mousemove.stop.prevent="drag">
 		<audio id="audio-player"
 			ref="audio"
 			crossorigin="anonymous"
@@ -51,13 +52,15 @@
 <script>
 import user from '@/gql/queries/user.gql';
 import { ipcRenderer, remote } from 'electron';
+import { onLogout } from '@/vue-apollo';
 const { Menu, MenuItem } = remote;
 
 export default {
 	data() {
 		return {
 			menu: null,
-			mouseDown: false
+			mouseDown: false,
+			offset: null
 		};
 	},
 	computed: {
@@ -114,17 +117,16 @@ export default {
 	},
 	methods: {
 		buildMenu() {
-			const app = this;
 			this.menu = new Menu();
 			this.menu.append(new MenuItem(
 				{
 					label: 'Switch to kpop',
 					type: 'checkbox',
 					checked: this.isJpop ? false : true,
-					click() {
-						if (app.radioType === 'kpop') app.$store.commit('radioType', 'jpop');
-						else app.$store.commit('radioType', 'kpop');
-						app.buildMenu();
+					click: () => {
+						if (this.radioType === 'kpop') this.$store.commit('radioType', 'jpop');
+						else this.$store.commit('radioType', 'kpop');
+						this.buildMenu();
 					}
 				}
 			));
@@ -138,29 +140,33 @@ export default {
 			this.menu.append(new MenuItem({ type: 'separator' }));
 			this.menu.append(new MenuItem(
 				{
-					label: this.loggedIn ? 'Logout' : 'Login', click() {
-						if (app.loggedIn) app.$store.dispatch('logout');
-						else ipcRenderer.send('loginModal');
-						app.buildMenu();
+					label: this.loggedIn ? 'Logout' : 'Login',
+					click: async () => {
+						if (this.loggedIn) {
+							this.$store.dispatch('logout');
+							await onLogout(this.$apollo);
+						} else {
+							ipcRenderer.send('loginModal');
+						}
+						this.buildMenu();
 					}
 				}
 			));
 		},
-		drag(e) {
-			/*
-			// https://github.com/kapetan/electron-drag
+		mousedown({ clientX, clientY }) {
+			this.offset = [clientX, clientY];
+			this.mouseDown = true;
+		},
+		mouseup() {
+			this.offset = null;
+			this.mousDown = false;
+		},
+		drag({ screenX, screenY }) {
+			if (!this.offset || !this.offset.length) return;
 
-			if (!this.mouseDown) return;
-
-			const offset = remote.getCurrentWindow().getPosition();
-			const x = Math.round(e.screenX - offset[0]);
-			const y = Math.round(e.screenY - offset[1]);
-
+			const x = Math.round(screenX - this.offset[0]);
+			const y = Math.round(screenY - this.offset[1]);
 			remote.getCurrentWindow().setPosition(x, y);
-			console.log(e, x, y);
-
-			// No fucking idea honestly
-			*/
 		}
 	}
 };
