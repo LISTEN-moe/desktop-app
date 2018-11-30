@@ -7,8 +7,8 @@
 		grid-template-rows: 64px;
 		grid-template-areas: "playButton player favoriteButton volumeButton coverArt";
 		width: 100vw;
-
 		-webkit-app-region: drag;
+
 		a, span, svg, img {
 			-webkit-app-region: no-drag;
 		}
@@ -171,7 +171,6 @@
 			}
 		}
 	}
-
 </style>
 
 <template>
@@ -253,7 +252,10 @@ import favoriteSong from '@/gql/mutations/favoriteSong.gql';
 import checkFavorite from '@/gql/queries/checkFavorite.gql';
 import Budicon from '@/components/icons/budicon';
 import Marquee from '@/components/marquee';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
+import { join } from 'path';
+import { onLogout } from '@/vue-apollo';
+const { Menu, MenuItem, Tray, app } = remote;
 
 const MEDIA_ELEMENT_NODES = new WeakMap();
 
@@ -286,7 +288,8 @@ export default {
 	data() {
 		return {
 			volume: 0,
-			isVolumeSliderOpen: false
+			isVolumeSliderOpen: false,
+			tray: null
 		};
 	},
 	computed: {
@@ -399,6 +402,10 @@ export default {
 		async websocket() {
 			if (this.loggedIn) await this.checkFavorite();
 			this.updateDiscordActivity();
+		},
+		loggedIn() {
+			if (!this.tray) this.tray = new Tray(join(__static, 'logo.png'));
+			this.tray.setContextMenu(this.buildMenu());
 		}
 	},
 	mounted() {
@@ -427,9 +434,56 @@ export default {
 		};
 		if (!this.audio.audio.paused) MUSIC_VISUALS.start();
 	},
+	beforeDestroy() {
+		if (this.tray) this.tray.destroy();
+	},
 	methods: {
 		openSettings() {
 			ipcRenderer.send('settingsModal');
+		},
+		buildMenu() {
+			const menu = new Menu();
+			menu.append(new MenuItem(
+				{
+					label: 'Switch to kpop',
+					type: 'checkbox',
+					checked: this.isJpop ? false : true,
+					click: () => {
+						if (this.radioType === 'kpop') this.$store.commit('radioType', 'jpop');
+						else this.$store.commit('radioType', 'kpop');
+					}
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					label: 'Settings', click() {
+						ipcRenderer.send('settingsModal');
+					}
+				}
+			));
+			menu.append(new MenuItem({ type: 'separator' }));
+			menu.append(new MenuItem(
+				{
+					label: this.loggedIn ? 'Logout' : 'Login',
+					click: async () => {
+						if (this.loggedIn) {
+							this.$store.dispatch('logout');
+							await onLogout(this.$apollo);
+						} else {
+							ipcRenderer.send('loginModal');
+						}
+					}
+				}
+			));
+			menu.append(new MenuItem({ type: 'separator' }));
+			menu.append(new MenuItem(
+				{
+					label: 'Exit',
+					click: () => app.quit()
+				}
+			));
+
+			return menu;
 		},
 		scrollVolume({ deltaY }) {
 			const player = this.audio.audio;
@@ -481,7 +535,6 @@ export default {
 			this.$forceUpdate();
 		},
 		togglePlaying() {
-			if (!this.loggedIn) ipcRenderer.send('loginModal');
 			if (!AUDIO_CONTEXT) {
 				AUDIO_CONTEXT = new AudioContext();
 				if (MEDIA_ELEMENT_NODES.has(this.audio.audio)) {

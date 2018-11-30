@@ -46,9 +46,6 @@
 <script>
 import user from '@/gql/queries/user.gql';
 import { ipcRenderer, remote } from 'electron';
-import { join } from 'path';
-import { onLogout } from '@/vue-apollo';
-const { Menu, MenuItem, Tray } = remote;
 
 export default {
 	data() {
@@ -62,12 +59,6 @@ export default {
 		},
 		radioType() {
 			return this.$store.state.radioType;
-		}
-	},
-	watch: {
-		loggedIn() {
-			if (this.tray) this.tray.setContextMenu(this.buildMenu());
-			else this.tray = new Tray(join(__static, 'logo.png'));
 		}
 	},
 	async mounted() {
@@ -101,53 +92,6 @@ export default {
 			else if (option === 'smallAlbumArt' && !value) electronWindow.setSize(electronWindow.getBounds().width, 230, true);
 			this.$store.dispatch('setState', { option, value });
 		});
-
-		if (!this.tray) this.tray = new Tray(join(__static, 'logo.png'));
-		this.tray.setContextMenu(this.buildMenu());
-	},
-	beforeDestroy() {
-		if (this.tray) this.tray.destroy();
-	},
-	methods: {
-		buildMenu() {
-			const menu = new Menu();
-			menu.append(new MenuItem(
-				{
-					label: 'Switch to kpop',
-					type: 'checkbox',
-					checked: this.isJpop ? false : true,
-					click: () => {
-						if (this.radioType === 'kpop') this.$store.commit('radioType', 'jpop');
-						else this.$store.commit('radioType', 'kpop');
-						this.buildMenu();
-					}
-				}
-			));
-			menu.append(new MenuItem(
-				{
-					label: 'Settings', click() {
-						ipcRenderer.send('settingsModal');
-					}
-				}
-			));
-			menu.append(new MenuItem({ type: 'separator' }));
-			menu.append(new MenuItem(
-				{
-					label: this.loggedIn ? 'Logout' : 'Login',
-					click: async () => {
-						if (this.loggedIn) {
-							this.$store.dispatch('logout');
-							await onLogout(this.$apollo);
-						} else {
-							ipcRenderer.send('loginModal');
-						}
-						this.buildMenu();
-					}
-				}
-			));
-
-			return menu;
-		}
 	}
 };
 </script>
