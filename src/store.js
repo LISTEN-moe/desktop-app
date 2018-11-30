@@ -10,6 +10,7 @@ export default new Store({
 		token: null,
 		websocket: null,
 		playing: false,
+		isJpop: true,
 		// Settings
 		preferRomaji: false,
 		eventStarts: true,
@@ -61,6 +62,9 @@ export default new Store({
 		playing(state, payload) {
 			state.playing = payload;
 		},
+		isJpop(state, payload) {
+			state.isJpop = payload;
+		},
 
 		// Settings
 		preferRomaji(state, payload) {
@@ -86,6 +90,7 @@ export default new Store({
 			commit('token', null);
 			commit('user', null);
 			commit('loggedIn', false);
+			localStorage.removeItem('token');
 		},
 		setState({ commit }, { option, value }) {
 			commit(option, value);
