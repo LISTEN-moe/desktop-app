@@ -10,7 +10,7 @@ export default new Store({
 		token: null,
 		websocket: null,
 		playing: false,
-		isJpop: true,
+		radioType: 'jpop',
 		// Settings
 		preferRomaji: false,
 		eventStarts: true,
@@ -62,8 +62,8 @@ export default new Store({
 		playing(state, payload) {
 			state.playing = payload;
 		},
-		isJpop(state, payload) {
-			state.isJpop = payload;
+		radioType(state, payload) {
+			state.radioType = payload;
 		},
 
 		// Settings

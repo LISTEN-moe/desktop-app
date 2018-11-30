@@ -205,8 +205,7 @@
 		</div>
 		<div class="volumeButton shadow"
 			@wheel.stop.prevent="scrollVolume">
-			<Budicon icon="volume"
-				@click.native.stop.prevent="openSettings" />
+			<Budicon icon="volume" />
 		</div>
 
 		<div class="albumContainer"
@@ -402,9 +401,6 @@ export default {
 		if (!this.audio.audio.paused) MUSIC_VISUALS.start();
 	},
 	methods: {
-		openSettings() {
-			ipcRenderer.send('settingsModal');
-		},
 		scrollVolume({ deltaY }) {
 			const player = this.audio.audio;
 			if (deltaY > 0) {
@@ -455,7 +451,6 @@ export default {
 			this.$forceUpdate();
 		},
 		togglePlaying() {
-			if (!this.loggedIn) ipcRenderer.send('loginModal');
 			if (!AUDIO_CONTEXT) {
 				AUDIO_CONTEXT = new AudioContext();
 				if (MEDIA_ELEMENT_NODES.has(this.audio.audio)) {

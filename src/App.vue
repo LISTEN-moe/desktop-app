@@ -56,8 +56,8 @@ export default {
 		loggedIn() {
 			return this.$store.state.loggedIn;
 		},
-		isJpop() {
-			return this.$store.state.isJpop;
+		radioType() {
+			return this.$store.state.radioType;
 		}
 	},
 	watch: {
@@ -114,7 +114,8 @@ export default {
 					type: 'checkbox',
 					checked: this.isJpop ? false : true,
 					click() {
-						// We toggle the radio type
+						if (app.radioType === 'kpop') app.$store.commit('radioType', 'jpop');
+						else app.$store.commit('radioType', 'kpop');
 						app.buildMenu();
 					}
 				}
