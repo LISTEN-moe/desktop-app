@@ -27,6 +27,10 @@
 		text-size-adjust: 100%;
 		-webkit-font-smoothing: antialiased;
 	}
+
+	input, div, span, a {
+		outline: none !important;
+	}
 </style>
 
 <template>
