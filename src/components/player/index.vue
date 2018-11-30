@@ -114,6 +114,7 @@
 				transform: scale3d(0.5, 0.5, 1) !important;
 				z-index: 9;
 				transition: opacity .3s ease-in-out;
+				opacity: .75;
 				// opacity: 0;
 				// pointer-events: none;
 			}
