@@ -32,7 +32,7 @@
 			position: relative;
 			display: grid;
 			grid-template-columns: 100%;
-			grid-template-rows: auto auto auto;
+			grid-template-rows: auto auto;
 			overflow: hidden;
 
 			// Span and links color
@@ -54,11 +54,12 @@
 			}
 
 			.artistContainer {
-				padding-top: 5px;
+				padding-top: 10px;
 				text-align: left;
 			}
 
 			.titleContainer {
+				padding-bottom: 10px;
 				text-align: left;
 			}
 
@@ -87,6 +88,18 @@
 				bottom: 0;
 				height: 64px;
 				z-index: 0;
+			}
+
+			&.hasRequester {
+				grid-template-rows: auto auto auto;
+
+				.artistContainer {
+					padding-top: 5px;
+				}
+
+				.titleContainer {
+					padding-bottom: 0px;
+				}
 			}
 		}
 
@@ -145,7 +158,8 @@
 				y="-2"
 				@click.native.stop.prevent="togglePlaying" />
 		</div>
-		<div class="player shadow">
+		<div class="player shadow"
+			:class="{ hasRequester: currentRequester || currentEvent }">
 			<canvas ref="canvas" />
 			<Marquee v-if="currentArtists"
 				ref="marquee"
@@ -172,7 +186,8 @@
 						class="source">[{{ currentSource.name }}]</a>
 				</span>
 			</Marquee>
-			<div class="info">
+			<div v-if="currentRequester || currentEvent"
+				class="info">
 				<div v-if="currentRequester"
 					class="requestedBy text">
 					Requested by <a :href="currentRequester.link">{{ currentRequester.name }}</a>
