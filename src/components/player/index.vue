@@ -27,20 +27,24 @@
 		}
 
 		.player {
-			grid-area: player;
 			-webkit-app-region: drag;
+			a {
+				-webkit-app-region: no-drag;
+			}
+		}
+
+		.player {
+			grid-area: player;
 			position: relative;
 			display: grid;
 			grid-template-columns: 100%;
 			grid-template-rows: auto auto;
 			overflow: hidden;
 
-			// Span and links color
 			color: #c7ccd8;
 			a {
 				color: $basePink;
 				text-decoration: none;
-				-webkit-app-region: no-drag;
 
 				&.source {
 					color: $textColor;

@@ -30,11 +30,16 @@
 		text-rendering: optimizeLegibility;
 		text-size-adjust: 100%;
 		-webkit-font-smoothing: antialiased;
+		// -webkit-user-select: none;
 	}
 </style>
 
 <template>
-	<div id="app">
+	<div id="app"
+		ref="app"
+		@mousedown.stop="mouseDown = true"
+		@mouseup.stop="mouseDown = false"
+		@mousemove.stop="drag">
 		<audio id="audio-player"
 			ref="audio"
 			crossorigin="anonymous"
@@ -50,7 +55,10 @@ const { Menu, MenuItem } = remote;
 
 export default {
 	data() {
-		return { menu: null };
+		return {
+			menu: null,
+			mouseDown: false
+		};
 	},
 	computed: {
 		loggedIn() {
@@ -137,6 +145,20 @@ export default {
 					}
 				}
 			));
+		},
+		drag(e) {
+			/*
+			if (!this.mouseDown) return;
+
+			const offset = remote.getCurrentWindow().getPosition();
+			const x = Math.round(e.screenX - offset[0]);
+			const y = Math.round(e.screenY - offset[1]);
+
+			remote.getCurrentWindow().setPosition(x, y);
+			console.log(e, x, y);
+
+			// No fucking idea honestly
+			*/
 		}
 	}
 };
