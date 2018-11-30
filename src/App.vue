@@ -148,6 +148,8 @@ export default {
 		},
 		drag(e) {
 			/*
+			// https://github.com/kapetan/electron-drag
+
 			if (!this.mouseDown) return;
 
 			const offset = remote.getCurrentWindow().getPosition();
