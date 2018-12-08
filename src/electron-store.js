@@ -1,8 +1,11 @@
 import electron from 'electron';
 import path from 'path';
 import fs from 'fs';
+import { promisify } from 'util';
 
-class Store {
+const writeFile = promisify(fs.writeFile);
+
+export default class Store {
 	constructor(opts) {
 		const userDataPath = (electron.app || electron.remote.app).getPath('userData');
 		this.path = path.join(userDataPath, 'settings.json');
@@ -13,11 +16,13 @@ class Store {
 		return this.data[key];
 	}
 
-	set(key, val) {
+	async set(key, val) {
 		this.data[key] = val;
-		fs.writeFile(this.path, JSON.stringify(this.data), err => {
-			if (err) throw err;
-		});
+		try {
+			await writeFile(this.path, JSON.stringify(this.data));
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	parseDataFile(filePath, defaults) {
@@ -28,5 +33,3 @@ class Store {
 		}
 	}
 }
-
-export default Store;

@@ -1,10 +1,10 @@
 import { app, protocol, BrowserWindow, shell, ipcMain } from 'electron';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
+import Store from './electron-store';
 
 const { Client } = require('discord-rpc');
 const rpc = new Client({ transport: 'ipc' });
-import Store from './electron-store';
 
 // Global reference because javascript GC
 let win;
@@ -53,14 +53,14 @@ async function createWindow() {
 		win = null;
 	});
 
-	win.on('resize', () => {
+	win.on('resize', async () => {
 		const values = win.getSize();
-		store.set('windowSize', values);
+		await store.set('windowSize', values);
 	});
 
-	win.on('move', () => {
+	win.on('move', async () => {
 		const values = win.getPosition();
-		store.set('windowPosition', values);
+		await store.set('windowPosition', values);
 	});
 
 	win.webContents.on('will-navigate', (event, url) => {
