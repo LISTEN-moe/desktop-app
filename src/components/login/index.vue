@@ -19,6 +19,7 @@
 		<div v-if="!showRegister && !showMfa"
 			class="card dark shadow">
 			<div class="card-body">
+				<Close @clicked="closeWindow" />
 				<img src="@/assets/images/logo-square-64.png">
 				<input v-model="username"
 					type="text"
@@ -39,6 +40,7 @@
 		<div v-else-if="showRegister && !showMfa"
 			class="card dark shadow">
 			<div class="card-body">
+				<Close @clicked="closeWindow" />
 				<img src="@/assets/images/logo-square-64.png">
 				<input v-model="username"
 					type="text"
@@ -64,6 +66,7 @@
 		<div v-else-if="showMfa"
 			class="card dark shadow">
 			<div class="card-body mfa">
+				<Close @clicked="closeWindow" />
 				<img src="@/assets/images/logo-square-64.png">
 				<input v-model="mfaToken"
 					type="text"
@@ -82,10 +85,12 @@
 import login from '@/gql/mutations/login.gql';
 import register from '@/gql/mutations/register.gql';
 import loginMfa from '@/gql/mutations/loginMfa.gql';
+import Close from '@/components/buttons/close';
 import { remote, ipcRenderer } from 'electron';
 import { onLogin } from '@/vue-apollo';
 
 export default {
+	components: { Close },
 	data() {
 		return {
 			showRegister: false,
@@ -194,6 +199,9 @@ export default {
 			this.mfaToken = null;
 			this.tempToken = null;
 			this.showMfa = false;
+		},
+		closeWindow() {
+			return remote.getCurrentWindow().close();
 		}
 	}
 };
