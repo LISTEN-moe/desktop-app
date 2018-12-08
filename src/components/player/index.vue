@@ -25,8 +25,9 @@
 
 		&.gaps {
 			grid-gap: 5px;
-			> .shadow { box-shadow: none; }
 		}
+		
+		&:not(.gaps) > .shadow { box-shadow: none; }
 
 		.playButton {
 			grid-area: playButton;
