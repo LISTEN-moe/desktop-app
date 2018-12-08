@@ -94,6 +94,41 @@
 				z-index: 0;
 			}
 
+			.backdrop {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 10;
+				background: black;
+				opacity: .35;
+				display: none;
+
+				&.active {
+					display: block;
+				}
+			}
+
+			.sliderContainer {
+				position: absolute;
+				top: 20px;
+				right: 20px;
+				width: 100%;
+				z-index: 11;
+				max-width: 200px;
+				opacity: 0;
+				pointer-events: none;
+				-webkit-app-region: no-drag;
+
+				> * { -webkit-app-region: no-drag; }
+
+				&.active {
+					opacity: 1;
+					pointer-events: auto;
+				}
+			}
+
 			&.hasRequester {
 				grid-template-rows: auto auto auto;
 
@@ -183,10 +218,24 @@
 		</div>
 		<div class="player shadow"
 			:class="{ hasRequester: currentRequester || currentEvent }">
+			<div class="backdrop"
+				:class="{ active: isVolumeSliderOpen }" />
 			<Budicon class="settingsIcon"
 				icon="settings"
 				@click.native.stop.prevent="openSettings" />
 			<canvas ref="canvas" />
+			<div class="sliderContainer"
+				:class="{ active: isVolumeSliderOpen }">
+				<Slider
+					ref="slider"
+					v-model="volume"
+					tooltip="hover"
+					tooltipDir="bottom"
+					:sliderStyle="{ background: radioType === 'jpop' ? '#c40447' : '#1587c9'}"
+					:processStyle="{ background: radioType === 'jpop' ? '#ff015b' : '#30A9ED'}"
+					:tooltipStyle="{ backgroundColor: '#1d1f2b', borderColor: '#1d1f2b' }"
+					@callback="setVolume" />
+			</div>
 			<Marquee v-if="currentArtists"
 				ref="marquee"
 				class="artistContainer">
@@ -231,7 +280,8 @@
 		</div>
 		<div class="volumeButton shadow"
 			@wheel.stop.prevent="scrollVolume">
-			<Budicon icon="volume" />
+			<Budicon icon="volume"
+				@click.native.stop.prevent="isVolumeSliderOpen = !isVolumeSliderOpen" />
 		</div>
 
 		<div class="albumContainer"
@@ -252,6 +302,8 @@ import favoriteSong from '@/gql/mutations/favoriteSong.gql';
 import checkFavorite from '@/gql/queries/checkFavorite.gql';
 import Budicon from '@/components/icons/budicon';
 import Marquee from '@/components/marquee';
+import Slider from '@/components/slider/slider';
+
 import { ipcRenderer, remote } from 'electron';
 import { join } from 'path';
 import { onLogout } from '@/vue-apollo';
@@ -277,7 +329,8 @@ let MUSIC_VISUALS;
 export default {
 	components: {
 		Budicon,
-		Marquee
+		Marquee,
+		Slider
 	},
 	props: {
 		audio: {
@@ -402,6 +455,7 @@ export default {
 		async websocket() {
 			if (this.loggedIn) await this.checkFavorite();
 			this.updateDiscordActivity();
+			if (this.$refs && this.$refs.slider) this.$nextTick(() => this.$refs.slider.refresh());
 		},
 		loggedIn() {
 			if (!this.tray) this.tray = new Tray(join(__static, 'logo.png'));
@@ -409,7 +463,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.volume = process.browser ? window.localStorage ? localStorage.getItem('volume') ? localStorage.getItem('volume') * 100 : 50 : 50 : 50;
+		this.volume = window.localStorage ? localStorage.getItem('volume') ? localStorage.getItem('volume') * 100 : 50 : 50;
 
 		MUSIC_VISUALS = {
 			start: () => {
@@ -485,6 +539,11 @@ export default {
 
 			return menu;
 		},
+		setVolume(val) {
+			const player = this.audio.audio;
+			player.volume = val / 100;
+			window.localStorage ? localStorage.setItem('volume', val / 100) : null; // eslint-disable-line
+		},
 		scrollVolume({ deltaY }) {
 			const player = this.audio.audio;
 			if (deltaY > 0) {
@@ -494,7 +553,8 @@ export default {
 				if (player.volume === 1.0) return;
 				player.volume = (player.volume + 0.1).toFixed(1);
 			}
-			process.browser ? window.localStorage ? localStorage.setItem('volume', player.volume) : null : null;
+			window.localStorage ? localStorage.setItem('volume', player.volume) : null;
+			this.volume = player.volume * 100;
 		},
 		updateDiscordActivity() {
 			const artists = this.currentArtists.reduce((out, artist) => {
@@ -559,7 +619,7 @@ export default {
 			const player = this.audio.audio;
 			if (player.paused) {
 				player.src = this.getSource();
-				player.volume = process.browser ? window.localStorage ? localStorage.getItem('volume') ? localStorage.getItem('volume') : 0.5 : 0.5 : 0.5;
+				player.volume = window.localStorage ? localStorage.getItem('volume') ? localStorage.getItem('volume') : 0.5 : 0.5;
 				player.play();
 				MUSIC_VISUALS.start();
 				this.$store.commit('playing', true);
