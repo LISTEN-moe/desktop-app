@@ -2,6 +2,7 @@
 	@import "@/assets/styles/_colors.scss";
 
 	.card .card-body {
+		input, button { -webkit-app-region: no-drag; }
 		overflow: hidden;
 		min-width: 20rem;
 		text-align: center;
