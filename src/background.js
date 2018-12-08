@@ -10,14 +10,56 @@ let win;
 let loginModal;
 let settingsModal;
 
+const electron = require('electron');
+const path = require('path');
+const fs = require('fs');
+
+class Store {
+	constructor(opts) {
+		const userDataPath = (electron.app || electron.remote.app).getPath('userData');
+		this.path = path.join(userDataPath, 'settings.json');
+		this.data = this.parseDataFile(this.path, opts.defaults);
+	}
+
+	get(key) {
+		return this.data[key];
+	}
+
+	set(key, val) {
+		this.data[key] = val;
+		fs.writeFileSync(this.path, JSON.stringify(this.data));
+	}
+
+	parseDataFile(filePath, defaults) {
+		try {
+			return JSON.parse(fs.readFileSync(filePath));
+		} catch (error) {
+			return defaults;
+		}
+	}
+}
+
+
 protocol.registerStandardSchemes(['app'], { secure: true });
 async function createWindow() {
+	const store = new Store({
+		defaults: {
+			windowSize: [800, 80],
+			windowPosition: []
+		}
+	});
+
+	const size = store.get('windowSize');
+	const pos = store.get('windowPosition');
+
 	win = new BrowserWindow({
 		title: 'LISTEN.MOE - Desktop App',
-		width: 800,
+		width: size[0],
 		minWidth: 400,
 		height: 80,
 		minHeight: 80,
+		x: pos ? pos[0] ? pos[0] : null : null,
+		y: pos ? pos[1] ? pos[1] : null : null,
 		frame: false,
 		transparent: true
 	});
@@ -38,6 +80,16 @@ async function createWindow() {
 
 	win.on('closed', () => {
 		win = null;
+	});
+
+	win.on('resize', () => {
+		const values = win.getSize();
+		store.set('windowSize', values);
+	});
+
+	win.on('move', () => {
+		const values = win.getPosition();
+		store.set('windowPosition', values);
 	});
 
 	win.webContents.on('will-navigate', (event, url) => {
