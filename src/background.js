@@ -1,6 +1,7 @@
 import { app, protocol, BrowserWindow, shell, ipcMain } from 'electron';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
+import Store from './electron-store';
 
 const { Client } = require('discord-rpc');
 const rpc = new Client({ transport: 'ipc' });
@@ -12,12 +13,24 @@ let settingsModal;
 
 protocol.registerStandardSchemes(['app'], { secure: true });
 async function createWindow() {
+	const store = new Store({
+		defaults: {
+			windowSize: [800, 80],
+			windowPosition: []
+		}
+	});
+
+	const size = store.get('windowSize');
+	const pos = store.get('windowPosition');
+
 	win = new BrowserWindow({
 		title: 'LISTEN.MOE - Desktop App',
-		width: 800,
+		width: size[0],
 		minWidth: 400,
 		height: 80,
 		minHeight: 80,
+		x: pos ? pos[0] ? pos[0] : null : null,
+		y: pos ? pos[1] ? pos[1] : null : null,
 		frame: false,
 		transparent: true
 	});
@@ -38,6 +51,16 @@ async function createWindow() {
 
 	win.on('closed', () => {
 		win = null;
+	});
+
+	win.on('resize', async () => {
+		const values = win.getSize();
+		await store.set('windowSize', values);
+	});
+
+	win.on('move', async () => {
+		const values = win.getPosition();
+		await store.set('windowPosition', values);
 	});
 
 	win.webContents.on('will-navigate', (event, url) => {
