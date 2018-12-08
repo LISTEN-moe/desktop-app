@@ -102,7 +102,7 @@
 				height: 100%;
 				z-index: 10;
 				background: black;
-				opacity: .75;
+				opacity: .35;
 				display: none;
 
 				&.active {
