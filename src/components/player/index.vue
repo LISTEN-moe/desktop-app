@@ -576,6 +576,7 @@ export default {
 			return `https://listen.moe/${isKpop}stream`;
 		},
 		async toggleFavorite() {
+			if (!this.loggedIn) return ipcRenderer.send('loginModal');
 			try {
 				await this.$apollo.mutate({
 					mutation: favoriteSong,
