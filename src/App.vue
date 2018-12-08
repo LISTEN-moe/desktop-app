@@ -73,9 +73,7 @@ export default {
 				});
 
 				if (data.user) {
-					this.$store.commit('user', data.user);
-					this.$store.commit('loggedIn', true);
-					this.$store.commit('token', token);
+					this.$store.dispatch('login', { token, user: data.user });
 					this.$forceUpdate();
 				}
 			} catch {}

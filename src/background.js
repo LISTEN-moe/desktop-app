@@ -118,7 +118,10 @@ async function createWindow() {
 
 	ipcMain.on('reload', () => win.reload());
 
-	ipcMain.on('login', (_, arg) => win.webContents.send('login', arg));
+	ipcMain.on('login', (_, arg) => {
+		win.webContents.send('login', arg);
+		if (settingsModal) settingsModal.webContents.send('login', arg);
+	});
 	ipcMain.on('settingsChange', (_, arg) => win.webContents.send('playerOptionsChange', arg));
 }
 

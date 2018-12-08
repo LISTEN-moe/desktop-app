@@ -104,6 +104,11 @@ export default {
 			return this.$store.state.user;
 		}
 	},
+	mounted() {
+		ipcRenderer.on('login', (_, { token, user }) => {
+			this.$store.dispatch('login', { token, user });
+		});
+	},
 	methods: {
 		login() {
 			ipcRenderer.send('loginModal');
