@@ -25,6 +25,7 @@
 
 		&.gaps {
 			grid-gap: 5px;
+			> .shadow { box-shadow: none; }
 		}
 
 		.playButton {
