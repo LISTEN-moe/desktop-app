@@ -4,41 +4,12 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const { Client } = require('discord-rpc');
 const rpc = new Client({ transport: 'ipc' });
+import Store from './electron-store';
 
 // Global reference because javascript GC
 let win;
 let loginModal;
 let settingsModal;
-
-const electron = require('electron');
-const path = require('path');
-const fs = require('fs');
-
-class Store {
-	constructor(opts) {
-		const userDataPath = (electron.app || electron.remote.app).getPath('userData');
-		this.path = path.join(userDataPath, 'settings.json');
-		this.data = this.parseDataFile(this.path, opts.defaults);
-	}
-
-	get(key) {
-		return this.data[key];
-	}
-
-	set(key, val) {
-		this.data[key] = val;
-		fs.writeFileSync(this.path, JSON.stringify(this.data));
-	}
-
-	parseDataFile(filePath, defaults) {
-		try {
-			return JSON.parse(fs.readFileSync(filePath));
-		} catch (error) {
-			return defaults;
-		}
-	}
-}
-
 
 protocol.registerStandardSchemes(['app'], { secure: true });
 async function createWindow() {
