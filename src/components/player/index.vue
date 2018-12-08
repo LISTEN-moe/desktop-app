@@ -278,7 +278,8 @@
 				:icon="websocket.song.favorite ? 'filledStar' : 'star'"
 				@click.native.stop.prevent="toggleFavorite" />
 		</div>
-		<div class="volumeButton shadow">
+		<div class="volumeButton shadow"
+			@wheel.stop.prevent="scrollVolume">
 			<Budicon icon="volume"
 				@click.native.stop.prevent="isVolumeSliderOpen = !isVolumeSliderOpen" />
 		</div>
@@ -539,10 +540,8 @@ export default {
 			return menu;
 		},
 		setVolume(val) {
-			console.log(val);
 			const player = this.audio.audio;
 			player.volume = val / 100;
-			console.log(process);
 			window.localStorage ? localStorage.setItem('volume', val / 100) : null; // eslint-disable-line
 		},
 		scrollVolume({ deltaY }) {
@@ -555,6 +554,7 @@ export default {
 				player.volume = (player.volume + 0.1).toFixed(1);
 			}
 			window.localStorage ? localStorage.setItem('volume', player.volume) : null;
+			this.volume = player.volume * 100;
 		},
 		updateDiscordActivity() {
 			const artists = this.currentArtists.reduce((out, artist) => {
