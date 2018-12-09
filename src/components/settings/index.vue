@@ -48,6 +48,8 @@
 					@clicked="setOption('preferRomaji')">Prefer romaji over japanese</Toggle>
 				<Toggle :active="eventStarts"
 					@clicked="setOption('eventStarts')">Desktop notification when an event starts</Toggle>
+				<Toggle :active="alwaysOnTop"
+					@clicked="setOption('alwaysOnTop')">Always on top</Toggle>
 
 				<h1 class="title">Theme & Layout</h1>
 				<Toggle :active="enableGaps"
@@ -102,6 +104,9 @@ export default {
 		},
 		user() {
 			return this.$store.state.user;
+		},
+		alwaysOnTop() {
+			return this.$store.state.alwaysOnTop;
 		}
 	},
 	mounted() {

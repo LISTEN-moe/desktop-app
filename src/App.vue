@@ -59,6 +59,9 @@ export default {
 		},
 		radioType() {
 			return this.$store.state.radioType;
+		},
+		alwaysOnTop() {
+			return this.$store.state.alwaysOnTop;
 		}
 	},
 	async mounted() {
@@ -80,6 +83,7 @@ export default {
 		}
 		this.$store.dispatch('setInitialState');
 
+		ipcRenderer.send('settingsChange', ['alwaysOnTop', this.alwaysOnTop]);
 		ipcRenderer.on('login', (_, { token, user }) => {
 			this.$store.dispatch('login', { token, user });
 		});
@@ -88,6 +92,7 @@ export default {
 			const electronWindow = remote.getCurrentWindow();
 			if (option === 'smallAlbumArt' && value) electronWindow.setSize(electronWindow.getBounds().width, 80, true);
 			else if (option === 'smallAlbumArt' && !value) electronWindow.setSize(electronWindow.getBounds().width, 230, true);
+			else if (option === 'alwaysOnTop') electronWindow.setAlwaysOnTop(value);
 			this.$store.dispatch('setState', { option, value });
 		});
 	}

@@ -15,7 +15,8 @@ export default new Store({
 		preferRomaji: false,
 		eventStarts: true,
 		enableGaps: true,
-		smallAlbumArt: false
+		smallAlbumArt: false,
+		alwaysOnTop: true
 	},
 	mutations: {
 		loggedIn(state, payload) {
@@ -78,6 +79,9 @@ export default new Store({
 		},
 		smallAlbumArt(state, payload) {
 			state.smallAlbumArt = payload;
+		},
+		alwaysOnTop(state, payload) {
+			state.alwaysOnTop = payload;
 		}
 	},
 	actions: {
@@ -96,7 +100,7 @@ export default new Store({
 			localStorage.setItem(option, value);
 		},
 		setInitialState({ dispatch }) {
-			const whatToPopulate = ['preferRomaji', 'eventStarts', 'enableGaps', 'smallAlbumArt'];
+			const whatToPopulate = ['preferRomaji', 'eventStarts', 'enableGaps', 'smallAlbumArt', 'alwaysOnTop'];
 
 			for (const key of whatToPopulate) {
 				const storageValue = localStorage.getItem(key);
