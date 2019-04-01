@@ -25,6 +25,7 @@ async function createWindow() {
 
 	win = new BrowserWindow({
 		title: 'LISTEN.MOE - Desktop App',
+		icon: 'public/logo.png',
 		width: size[0],
 		minWidth: 400,
 		height: 80,

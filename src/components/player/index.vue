@@ -460,7 +460,7 @@ export default {
 			if (this.$refs && this.$refs.slider) this.$nextTick(() => this.$refs.slider.refresh());
 		},
 		loggedIn() {
-			if (!this.tray) this.tray = new Tray(join(__static, 'logo.png'));
+			if (!this.tray) this.tray = new Tray(join(__static, 'logo-trans.png'));
 			this.tray.setContextMenu(this.buildMenu());
 		}
 	},
