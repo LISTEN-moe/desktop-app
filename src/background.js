@@ -126,6 +126,8 @@ async function createWindow() {
 	ipcMain.on('settingsChange', (_, arg) => win.webContents.send('playerOptionsChange', arg));
 }
 
+app.disableHardwareAcceleration();
+
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') app.quit();
 });
@@ -136,7 +138,8 @@ app.on('activate', async () => {
 
 app.on('ready', async () => {
 	if (isDevelopment && !process.env.IS_TEST) await installVueDevtools();
-	await createWindow();
+	if (process.platform === 'linux') await setTimeout(() => createWindow(), 100);
+	else await createWindow();
 });
 
 if (isDevelopment) {
