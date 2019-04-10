@@ -25,6 +25,7 @@ async function createWindow() {
 
 	win = new BrowserWindow({
 		title: 'LISTEN.MOE - Desktop App',
+		icon: 'public/logo.png',
 		width: size[0],
 		minWidth: 400,
 		height: 80,
@@ -125,6 +126,9 @@ async function createWindow() {
 	ipcMain.on('settingsChange', (_, arg) => win.webContents.send('playerOptionsChange', arg));
 }
 
+// Disable hardware acceleration on Linux for transparent background
+if (process.platform === 'linux') app.disableHardwareAcceleration();
+
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') app.quit();
 });
@@ -135,7 +139,10 @@ app.on('activate', async () => {
 
 app.on('ready', async () => {
 	if (isDevelopment && !process.env.IS_TEST) await installVueDevtools();
-	await createWindow();
+
+	// Short timeout for Linux to make transparent background work.
+	if (process.platform === 'linux') await setTimeout(() => createWindow(), 100);
+	else await createWindow();
 });
 
 if (isDevelopment) {
