@@ -1,7 +1,7 @@
 {
 	"name": "listen.moe-desktop-app",
 	"description": "It's time to ditch other radios",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"main": "background.js",
 	"private": true,
 	"author": {
