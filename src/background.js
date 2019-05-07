@@ -141,7 +141,7 @@ app.on('ready', async () => {
 	if (isDevelopment && !process.env.IS_TEST) await installVueDevtools();
 
 	// Short timeout for Linux to make transparent background work.
-	if (process.platform === 'linux') await setTimeout(() => createWindow(), 100);
+	if (process.platform === 'linux') setTimeout(() => createWindow(), 300);
 	else await createWindow();
 });
 
