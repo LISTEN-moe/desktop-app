@@ -2,7 +2,7 @@
 	<img src="https://lolisafe.moe/DJwzPbWD.png" />
 </div>
 <h2 align="center">Official LISTEN.moe Desktop Client</h2>
-<h4 align="center">Simple, not lightweight <a href="https://listen.moe">LISTEN.moe</a> client for Windows/Linux/Mac.</h4> 
+<h4 align="center">Simple, not so lightweight <a href="https://listen.moe">LISTEN.moe</a> client for Windows/Linux/Mac.</h4> 
       
 ![](https://i.imgur.com/X1HI12o.gif)
 
