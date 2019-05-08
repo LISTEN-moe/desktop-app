@@ -100,7 +100,7 @@ async function createWindow() {
 
 		settingsModal = new BrowserWindow({
 			width: 500,
-			height: 545,
+			height: 595,
 			frame: false,
 			transparent: true,
 			parent: win

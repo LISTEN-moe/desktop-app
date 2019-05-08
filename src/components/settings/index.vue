@@ -15,6 +15,7 @@
 			overflow: hidden !important;
 
 			button { -webkit-app-region: no-drag; }
+
 			.buttonContainer {
 				margin-bottom: 5px;
 				margin-right: 5px;
