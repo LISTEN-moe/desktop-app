@@ -460,12 +460,13 @@ export default {
 			if (this.$refs && this.$refs.slider) this.$nextTick(() => this.$refs.slider.refresh());
 		},
 		loggedIn() {
-			if (!this.tray) this.tray = new Tray(join(__static, 'logo-trans.png'));
-			this.tray.setContextMenu(this.buildMenu());
+			this.buildTray();
 		}
 	},
 	mounted() {
 		this.volume = window.localStorage ? localStorage.getItem('volume') ? localStorage.getItem('volume') * 100 : 50 : 50;
+
+		this.buildTray();
 
 		MUSIC_VISUALS = {
 			start: () => {
@@ -652,6 +653,10 @@ export default {
 				// TODO: Proper feedback
 				/* this.$store.dispatch('alert', { message: error.message, error: true, duration: 5000 }); */
 			}
+		},
+		buildTray() {
+			if (!this.tray) this.tray = new Tray(join(__static, 'logo-trans.png'));
+			this.tray.setContextMenu(this.buildMenu());
 		}
 	}
 };

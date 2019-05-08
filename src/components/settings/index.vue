@@ -8,7 +8,6 @@
 	}
 
 	.card {
-		height: 100%;
 		-webkit-app-region: drag;
 		overflow: hidden !important;
 
