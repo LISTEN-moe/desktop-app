@@ -464,6 +464,9 @@ export default {
 		},
 		radioType() {
 			this.buildTray();
+		},
+		playing() {
+			this.buildTray();
 		}
 	},
 	mounted() {
@@ -503,6 +506,12 @@ export default {
 		},
 		buildMenu() {
 			const menu = new Menu();
+			menu.append(new MenuItem(
+				{
+					label: this.playing ? 'Pause' : 'Play',
+					click: () => this.togglePlaying()
+				}
+			));
 			menu.append(new MenuItem(
 				{
 					label: this.radioType === 'jpop' ? 'Switch to kpop' : 'Switch to jpop',
