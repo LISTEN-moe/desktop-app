@@ -35,7 +35,8 @@ module.exports = {
 								'x64'
 							]
 						}
-					]
+					],
+					category: 'Audio'
 				}
 			}
 		}
