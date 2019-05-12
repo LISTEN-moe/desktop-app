@@ -85,7 +85,10 @@ async function createWindow() {
 			height: 500,
 			frame: false,
 			transparent: true,
-			parent: win
+			parent: win,
+			webPreferences: {
+				nodeIntegration: true
+			}
 		});
 
 		if (isDevelopment || process.env.IS_TEST) {
@@ -107,7 +110,10 @@ async function createWindow() {
 			height: 595,
 			frame: false,
 			transparent: true,
-			parent: win
+			parent: win,
+			webPreferences: {
+				nodeIntegration: true
+			}
 		});
 
 		if (isDevelopment || process.env.IS_TEST) {
