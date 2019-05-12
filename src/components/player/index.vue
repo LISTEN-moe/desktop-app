@@ -464,6 +464,10 @@ export default {
 		},
 		radioType() {
 			this.buildTray();
+			if (this.playing) {
+				this.togglePlaying();
+				this.togglePlaying();
+			}
 		},
 		playing() {
 			this.buildTray();
