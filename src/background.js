@@ -11,7 +11,7 @@ let win;
 let loginModal;
 let settingsModal;
 
-protocol.registerStandardSchemes(['app'], { secure: true });
+protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 async function createWindow() {
 	const store = new Store({
 		defaults: {
@@ -33,13 +33,17 @@ async function createWindow() {
 		x: pos ? pos[0] ? pos[0] : null : null,
 		y: pos ? pos[1] ? pos[1] : null : null,
 		frame: false,
-		transparent: true
+		transparent: true,
+		webPreferences: {
+			nodeIntegration: true
+		}
 	});
 
 	if (isDevelopment || process.env.IS_TEST) {
 		win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
 	} else {
 		createProtocol('app');
+		win.setMenuBarVisibility(false);
 		win.loadURL('app://./index.html');
 	}
 
