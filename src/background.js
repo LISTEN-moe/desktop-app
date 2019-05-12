@@ -54,6 +54,22 @@ async function createWindow() {
 		win.focus();
 	});
 
+	// Prevent Defaults
+	win.on('minimize', event => {
+		event.preventDefault();
+		win.hide();
+	});
+
+	// Functions from tray
+	ipcMain.on('show-tray', () => {
+		win.show();
+		win.focus();
+	});
+
+	ipcMain.on('hide-tray', () => win.hide());
+
+	ipcMain.on('exit-tray', () => app.quit());
+
 	win.on('closed', () => {
 		win = null;
 	});

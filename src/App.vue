@@ -62,6 +62,9 @@ export default {
 		},
 		alwaysOnTop() {
 			return this.$store.state.alwaysOnTop;
+		},
+		hideFromTaskbar() {
+			return this.$store.state.hideFromTaskbar;
 		}
 	},
 	async mounted() {
@@ -84,6 +87,7 @@ export default {
 		this.$store.dispatch('setInitialState');
 
 		ipcRenderer.send('settingsChange', ['alwaysOnTop', this.alwaysOnTop]);
+		ipcRenderer.send('settingsChange', ['hideFromTaskbar', this.hideFromTaskbar]);
 		ipcRenderer.on('login', (_, { token, user }) => {
 			this.$store.dispatch('login', { token, user });
 		});
@@ -93,6 +97,7 @@ export default {
 			if (option === 'smallAlbumArt' && value) electronWindow.setSize(electronWindow.getBounds().width, 80, true);
 			else if (option === 'smallAlbumArt' && !value) electronWindow.setSize(electronWindow.getBounds().width, 230, true);
 			else if (option === 'alwaysOnTop') electronWindow.setAlwaysOnTop(value);
+			else if (option === 'hideFromTaskbar') electronWindow.setSkipTaskbar(value);
 			this.$store.dispatch('setState', { option, value });
 		});
 	}

@@ -152,16 +152,19 @@
 				z-index: 9;
 				transition: opacity .3s ease-in-out;
 				opacity: .75;
-				// opacity: 0;
-				// pointer-events: none;
 			}
 
-			/*
-			&:hover .settingsIcon {
-				opacity: 1;
-				pointer-events: auto;
+			.hideIcon {
+				position: absolute;
+				top: 0;
+				right: 1.2rem;
+				margin: 0;
+				transform: scale3d(0.5, 0.5, 1) !important;
+				z-index: 9;
+				transition: opacity .3s ease-in-out;
+				opacity: .75;
 			}
-			*/
+
 		}
 
 		.favoriteButton {
@@ -225,6 +228,9 @@
 			<Budicon class="settingsIcon"
 				icon="settings"
 				@click.native.stop.prevent="openSettings" />
+			<Budicon class="hideIcon"
+				icon="cross"
+				@click.native.stop.prevent="hideWindow" />
 			<canvas ref="canvas" />
 			<div class="sliderContainer"
 				:class="{ active: isVolumeSliderOpen }">
@@ -366,6 +372,9 @@ export default {
 		websocket() {
 			return this.$store.state.websocket;
 		},
+		hideFromTaskbar() {
+			return this.$store.state.hideFromTaskbar;
+		},
 		currentRequester() {
 			if (this.websocket && this.websocket.requester) {
 				return {
@@ -498,6 +507,9 @@ export default {
 		openSettings() {
 			ipcRenderer.send('settingsModal');
 		},
+		hideWindow() {
+			ipcRenderer.send('hide-tray')
+		},
 		buildMenu() {
 			const menu = new Menu();
 			menu.append(new MenuItem(
@@ -509,6 +521,12 @@ export default {
 						if (this.radioType === 'kpop') this.$store.commit('radioType', 'jpop');
 						else this.$store.commit('radioType', 'kpop');
 					}
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					label: 'Show App', 
+					click: () => ipcRenderer.send('show-tray')
 				}
 			));
 			menu.append(new MenuItem(
@@ -536,7 +554,7 @@ export default {
 			menu.append(new MenuItem(
 				{
 					label: 'Exit',
-					click: () => app.quit()
+					click: () => ipcRenderer.send('exit-tray')
 				}
 			));
 

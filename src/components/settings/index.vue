@@ -51,6 +51,8 @@
 					@clicked="setOption('eventStarts')">Desktop notification when an event starts</Toggle>
 				<Toggle :active="alwaysOnTop"
 					@clicked="setOption('alwaysOnTop')">Always on top</Toggle>
+				<Toggle :active="hideFromTaskbar"
+					@clicked="setOption('hideFromTaskbar')">Hide from taskbar</Toggle>
 
 				<h1 class="title">Theme & Layout</h1>
 				<Toggle :active="enableGaps"
@@ -108,6 +110,9 @@ export default {
 		},
 		alwaysOnTop() {
 			return this.$store.state.alwaysOnTop;
+		},
+		hideFromTaskbar() {
+			return this.$store.state.hideFromTaskbar;
 		}
 	},
 	mounted() {
