@@ -473,9 +473,12 @@ export default {
 		}
 	},
 	mounted() {
+		
 		this.volume = window.localStorage ? localStorage.getItem('volume') ? localStorage.getItem('volume') * 100 : 50 : 50;
 
 		this.buildTray();
+
+		this.tray.on('double-click', () => ipcRenderer.send('show-tray'));
 
 		MUSIC_VISUALS = {
 			start: () => {
