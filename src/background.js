@@ -98,7 +98,7 @@ async function createWindow() {
 
 		loginModal = new BrowserWindow({
 			width: 350,
-			height: 500,
+			height: 400,
 			frame: false,
 			transparent: true,
 			parent: win,
@@ -123,7 +123,7 @@ async function createWindow() {
 
 		settingsModal = new BrowserWindow({
 			width: 500,
-			height: 595,
+			height: 760,
 			frame: false,
 			transparent: true,
 			parent: win,

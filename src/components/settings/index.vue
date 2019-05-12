@@ -10,21 +10,35 @@
 	.card {
 		-webkit-app-region: drag;
 		overflow: hidden !important;
+		min-height: 100%;
 
 		.card-body {
 			overflow: hidden !important;
+			max-height: unset !important;
 
-			button { -webkit-app-region: no-drag; }
+			button { 
+				-webkit-app-region: no-drag;
+				width: 100%
+			}
 
 			.buttonContainer {
 				margin-bottom: 5px;
 				margin-right: 5px;
+				min-width: 80%;
 			}
 
-			.closeButton {
+			.closeContainer {
 				display: block;
-				margin: 0 auto;
-				margin-top: 2rem;
+				position: fixed;
+				top: 10px;
+				right: 10px;
+			}
+
+			.loggedInButton {
+				width: 100%;
+
+				button { width: 80%; }
+
 			}
 
 			a {
@@ -51,8 +65,13 @@
 					@clicked="setOption('eventStarts')">Desktop notification when an event starts</Toggle>
 				<Toggle :active="alwaysOnTop"
 					@clicked="setOption('alwaysOnTop')">Always on top</Toggle>
+				
+				<h1 class="title">Tray settings</h1>
 				<Toggle :active="hideFromTaskbar"
 					@clicked="setOption('hideFromTaskbar')">Hide from taskbar</Toggle>
+				<Toggle :active="minimizeToTray"
+					@clicked="setOption('minimizeToTray')">Minimize to tray</Toggle>
+
 
 				<h1 class="title">Theme & Layout</h1>
 				<Toggle :active="enableGaps"
@@ -67,12 +86,14 @@
 					target="_blank">
 					Logged in as {{ user.displayName }}
 				</a>
-				<button v-if="!loggedIn"
-					class="primary light"
-					@click.stop.prevent="login">Login</button>
-				<button v-else
-					class="primary light"
-					@click.stop.prevent="logout">Logout</button>
+				<div class="loggedInButton">
+					<button v-if="!loggedIn"
+						class="primary light"
+						@click.stop.prevent="login">Login</button>
+					<button v-else
+						class="primary light"
+						@click.stop.prevent="logout">Logout</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -113,6 +134,9 @@ export default {
 		},
 		hideFromTaskbar() {
 			return this.$store.state.hideFromTaskbar;
+		},
+		minimizeToTray() {
+			return this.$store.state.minimizeToTray;
 		}
 	},
 	mounted() {

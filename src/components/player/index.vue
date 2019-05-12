@@ -517,6 +517,13 @@ export default {
 			const menu = new Menu();
 			menu.append(new MenuItem(
 				{
+					label: 'Show App', 
+					click: () => ipcRenderer.send('show-tray')
+				}
+			));
+			menu.append(new MenuItem({ type: 'separator' }));
+			menu.append(new MenuItem(
+				{
 					label: 'Switch to kpop',
 					type: 'checkbox',
 					checked: this.isJpop ? false : true,
@@ -528,18 +535,11 @@ export default {
 			));
 			menu.append(new MenuItem(
 				{
-					label: 'Show App', 
-					click: () => ipcRenderer.send('show-tray')
-				}
-			));
-			menu.append(new MenuItem(
-				{
 					label: 'Settings', click() {
 						ipcRenderer.send('settingsModal');
 					}
 				}
 			));
-			menu.append(new MenuItem({ type: 'separator' }));
 			menu.append(new MenuItem(
 				{
 					label: this.loggedIn ? 'Logout' : 'Login',
