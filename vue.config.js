@@ -6,7 +6,9 @@ module.exports = {
 				appId: 'moe.listen.desktop',
 				productName: 'LISTEN.moe - Desktop App',
 				copyright: 'Copyright © 2018-2019 iCrawl',
-				icon: 'build/256x256.png',
+				appImage: {
+					systemIntegration: 'doNotAsk'
+			  },
 				win: {
 					target: [
 						{
@@ -15,7 +17,8 @@ module.exports = {
 								'x64'
 							]
 						}
-					]
+					],
+					icon: 'build/icon.ico'
 				},
 				mac: {
 					target: [
@@ -25,7 +28,8 @@ module.exports = {
 								'x64'
 							]
 						}
-					]
+					],
+					icon: 'build/256x256.png'
 				},
 				linux: {
 					target: [
@@ -36,7 +40,8 @@ module.exports = {
 							]
 						}
 					],
-					category: 'Audio'
+					category: 'Audio',
+					icon: 'build/256x256.png'
 				}
 			}
 		}

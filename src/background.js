@@ -2,6 +2,7 @@ import { app, protocol, BrowserWindow, shell, ipcMain } from 'electron';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import Store from './electron-store';
+import { join } from 'path';
 
 const { Client } = require('discord-rpc');
 const rpc = new Client({ transport: 'ipc' });
@@ -25,7 +26,8 @@ async function createWindow() {
 
 	win = new BrowserWindow({
 		title: 'LISTEN.MOE - Desktop App',
-		icon: 'public/logo.png',
+		// eslint-disable-next-line no-undef
+		icon: join(__static, 'logo.png'),
 		width: size[0],
 		minWidth: 400,
 		height: 80,
@@ -99,6 +101,8 @@ async function createWindow() {
 		loginModal = new BrowserWindow({
 			width: 350,
 			height: 400,
+			// eslint-disable-next-line no-undef
+			icon: join(__static, 'logo.png'),
 			frame: false,
 			transparent: true,
 			parent: win,
@@ -124,6 +128,8 @@ async function createWindow() {
 		settingsModal = new BrowserWindow({
 			width: 500,
 			height: 760,
+			// eslint-disable-next-line no-undef
+			icon: join(__static, 'logo.png'),
 			frame: false,
 			transparent: true,
 			parent: win,
