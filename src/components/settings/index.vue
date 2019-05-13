@@ -69,9 +69,8 @@
 				<h1 class="title">Tray settings</h1>
 				<Toggle :active="hideFromTaskbar"
 					@clicked="setOption('hideFromTaskbar')">Hide from taskbar</Toggle>
-				<Toggle :active="minimizeToTray"
-					@clicked="setOption('minimizeToTray')">Minimize to tray</Toggle>
-
+				<!-- <Toggle :active="minimizeToTray"
+				 	@clicked="setOption('minimizeToTray')">Minimize to tray</Toggle> -->
 
 				<h1 class="title">Theme & Layout</h1>
 				<Toggle :active="enableGaps"

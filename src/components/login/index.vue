@@ -5,6 +5,15 @@
 
 	button { width: unset !important;}
 
+	.closeContainer {
+		top: 30px !important;
+		right: 25px !important;
+	}
+
+	.mfa .closeContainer {
+		top: 60px !important;
+	}
+
 	.card .card-body {
 		input, button { -webkit-app-region: no-drag; }
 		overflow: hidden;

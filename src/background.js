@@ -56,13 +56,12 @@ async function createWindow() {
 		win.focus();
 	});
 
-	// Prevent Defaults
+	// TODO: Use setting
 	win.on('minimize', event => {
 		event.preventDefault();
 		win.hide();
 	});
 
-	// Functions from tray
 	ipcMain.on('show-tray', () => {
 		win.show();
 		win.focus();

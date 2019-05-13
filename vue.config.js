@@ -4,11 +4,9 @@ module.exports = {
 		electronBuilder: {
 			builderOptions: {
 				appId: 'moe.listen.desktop',
-				productName: 'LISTEN.moe - Desktop App',
+				productName: 'LISTEN.moe',
 				copyright: 'Copyright © 2018-2019 iCrawl',
-				appImage: {
-					systemIntegration: 'doNotAsk'
-			  },
+				artifactName: '${productName}${arch}${version}.${ext}',
 				win: {
 					target: [
 						{
@@ -42,6 +40,10 @@ module.exports = {
 					],
 					category: 'Audio',
 					icon: 'build/256x256.png'
+				},
+				appImage: {
+					systemIntegration: 'ask',
+					category: 'Audio'
 				}
 			}
 		}
