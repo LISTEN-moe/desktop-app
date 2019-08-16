@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import App from './App.vue';
 
 import router from './router';
@@ -7,9 +8,14 @@ import { createProvider } from './vue-apollo';
 
 Vue.config.productionTip = false;
 
-new Vue({
-	router,
-	store,
-	apolloProvider: createProvider(),
-	render: h => h(App)
-}).$mount('#app');
+Vue.use(VueApollo);
+
+(async () => {
+	new Vue({
+		router,
+		store,
+		apolloProvider: await createProvider(),
+		render: h => h(App)
+	}).$mount('#app');
+})();
+

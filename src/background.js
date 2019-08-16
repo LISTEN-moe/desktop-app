@@ -1,5 +1,5 @@
 import { app, protocol, BrowserWindow, shell, ipcMain } from 'electron';
-import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import Store from './electron-store';
 
@@ -35,6 +35,7 @@ async function createWindow() {
 		frame: false,
 		transparent: true,
 		webPreferences: {
+			webSecurity: false,
 			nodeIntegration: true
 		}
 	});
@@ -87,6 +88,7 @@ async function createWindow() {
 			transparent: true,
 			parent: win,
 			webPreferences: {
+				webSecurity: false,
 				nodeIntegration: true
 			}
 		});
@@ -112,6 +114,7 @@ async function createWindow() {
 			transparent: true,
 			parent: win,
 			webPreferences: {
+				webSecurity: false,
 				nodeIntegration: true
 			}
 		});
@@ -148,7 +151,7 @@ app.on('activate', async () => {
 });
 
 app.on('ready', async () => {
-	if (isDevelopment && !process.env.IS_TEST) await installVueDevtools();
+	/* if (isDevelopment && !process.env.IS_TEST) await installVueDevtools(); */
 
 	// Short timeout for Linux to make transparent background work.
 	if (process.platform === 'linux') setTimeout(() => createWindow(), 300);
