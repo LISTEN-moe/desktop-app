@@ -626,6 +626,21 @@ export default {
 				player.play();
 				MUSIC_VISUALS.start();
 				this.$store.commit('playing', true);
+				const artists = this.currentArtists.reduce((out, artist) => {
+					out += `${this.preferRomaji ? artist.nameRomaji ? artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji}${this.currentArtists.length > 1 ? ', ' : ''}`;
+					return out;
+				}, '');
+				ipcRenderer.send('updateDiscordActivity', {
+					details: this.currentSong.name.length >= 50 ? this.currentSong.name.substring(0, 50) : this.currentSong.name,
+					state: artists.length >= 50 ? artists.substring(0, 50) : artists,
+					startTimestamp: new Date(this.websocket.startTime).getTime(),
+					endTimestamp: new Date(this.websocket.startTime).getTime() + new Date(this.websocket.song.duration * 1000).getTime(),
+					largeImageKey: 'jpop',
+					largeImageText: 'LISTEN.moe',
+					smallImageKey: 'play',
+					smallImageText: 'Playing',
+					instance: false
+				});
 				return;
 			}
 			player.pause();
