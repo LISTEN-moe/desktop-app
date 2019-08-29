@@ -77,6 +77,7 @@ async function createWindow() {
 	await rpc.login({ clientId: '383375119827075072' });
 
 	ipcMain.on('updateDiscordActivity', (_, arg) => rpc.setActivity(arg));
+	ipcMain.on('clearDiscordActivity', () => rpc.clearActivity());
 
 	ipcMain.on('loginModal', () => {
 		if (loginModal) return loginModal.show();
