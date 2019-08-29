@@ -16,7 +16,7 @@ async function createWindow() {
 	const store = new Store({
 		defaults: {
 			windowSize: [800, 80],
-			windowPosition: []
+			windowPosition: [null, null]
 		}
 	});
 
@@ -30,8 +30,8 @@ async function createWindow() {
 		minWidth: 400,
 		height: 80,
 		minHeight: 80,
-		x: pos ? pos[0] ? pos[0] : null : null,
-		y: pos ? pos[1] ? pos[1] : null : null,
+		x: pos[0],
+		y: pos[1],
 		frame: false,
 		transparent: true,
 		webPreferences: {
