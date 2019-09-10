@@ -26,7 +26,7 @@
 		&.gaps {
 			grid-gap: 5px;
 		}
-		
+
 		&:not(.gaps) > .shadow { box-shadow: none; }
 
 		.playButton {
@@ -465,7 +465,7 @@ export default {
 	watch: {
 		async websocket() {
 			if (this.loggedIn) await this.checkFavorite();
-			this.updateDiscordActivity();
+			if (this.playing) this.updateDiscordActivity();
 			if (this.$refs && this.$refs.slider) this.$nextTick(() => this.$refs.slider.refresh());
 		},
 		loggedIn() {
@@ -647,6 +647,7 @@ export default {
 				player.play();
 				MUSIC_VISUALS.start();
 				this.$store.commit('playing', true);
+				this.updateDiscordActivity();
 				return;
 			}
 			player.pause();
@@ -654,6 +655,7 @@ export default {
 			MUSIC_VISUALS.stop();
 			player.currentTime = 0;
 			player.src = '';
+			ipcRenderer.send('clearDiscordActivity');
 		},
 		getSource() {
 			const isKpop = this.radioType === 'kpop' ? 'kpop/' : '';

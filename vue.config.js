@@ -6,7 +6,7 @@ module.exports = {
 				appId: 'moe.listen.desktop',
 				productName: 'LISTEN.moe',
 				copyright: 'Copyright © 2018-2019 iCrawl',
-				artifactName: '${productName}${arch}${version}.${ext}',
+				icon: 'build/512x512.png',
 				win: {
 					target: [
 						{

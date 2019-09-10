@@ -1,5 +1,5 @@
 import { app, protocol, BrowserWindow, shell, ipcMain } from 'electron';
-import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import Store from './electron-store';
 import { join } from 'path';
@@ -17,7 +17,7 @@ async function createWindow() {
 	const store = new Store({
 		defaults: {
 			windowSize: [800, 80],
-			windowPosition: []
+			windowPosition: [null, null]
 		}
 	});
 
@@ -32,11 +32,12 @@ async function createWindow() {
 		minWidth: 400,
 		height: 80,
 		minHeight: 80,
-		x: pos ? pos[0] ? pos[0] : null : null,
-		y: pos ? pos[1] ? pos[1] : null : null,
+		x: pos[0],
+		y: pos[1],
 		frame: false,
 		transparent: true,
 		webPreferences: {
+			webSecurity: false,
 			nodeIntegration: true
 		}
 	});
@@ -93,6 +94,7 @@ async function createWindow() {
 	await rpc.login({ clientId: '383375119827075072' });
 
 	ipcMain.on('updateDiscordActivity', (_, arg) => rpc.setActivity(arg));
+	ipcMain.on('clearDiscordActivity', () => rpc.clearActivity());
 
 	ipcMain.on('loginModal', () => {
 		if (loginModal) return loginModal.show();
@@ -106,6 +108,7 @@ async function createWindow() {
 			transparent: true,
 			parent: win,
 			webPreferences: {
+				webSecurity: false,
 				nodeIntegration: true
 			}
 		});
@@ -133,6 +136,7 @@ async function createWindow() {
 			transparent: true,
 			parent: win,
 			webPreferences: {
+				webSecurity: false,
 				nodeIntegration: true
 			}
 		});
@@ -169,7 +173,7 @@ app.on('activate', async () => {
 });
 
 app.on('ready', async () => {
-	if (isDevelopment && !process.env.IS_TEST) await installVueDevtools();
+	/* if (isDevelopment && !process.env.IS_TEST) await installVueDevtools(); */
 
 	// Short timeout for Linux to make transparent background work.
 	if (process.platform === 'linux') setTimeout(() => createWindow(), 300);
