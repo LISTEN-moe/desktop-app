@@ -1,0 +1,79 @@
+name: Release
+on:
+  release:
+    types: [published]
+jobs:
+  artifact_linux:
+    name: Upload Artifact (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Install Node v12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build application
+        run: yarn electron:build
+
+      - name: Upload artifact to release
+        uses: icrawl/action-artifact@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: 'dist_electron/LISTEN*.AppImage'
+
+  artifact_macos:
+    name: Upload Artifact (macOS)
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Install Node v12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build application
+        run: yarn electron:build
+
+      - name: Upload artifact to release
+        uses: icrawl/action-artifact@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: 'dist_electron/LISTEN*.dmg'
+
+  artifact_windows:
+    name: Upload Artifact (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: install node v12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build application
+        run: yarn electron:build
+
+      - name: Upload artifact to release
+        uses: icrawl/action-artifact@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: 'dist_electron/LISTEN*.exe'
