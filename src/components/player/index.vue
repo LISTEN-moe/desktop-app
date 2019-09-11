@@ -517,7 +517,7 @@ export default {
 			const menu = new Menu();
 			menu.append(new MenuItem(
 				{
-					label: 'Show App', 
+					label: 'Open LISTEN.moe', 
 					click: () => ipcRenderer.send('show-tray')
 				}
 			));
@@ -556,7 +556,7 @@ export default {
 			menu.append(new MenuItem({ type: 'separator' }));
 			menu.append(new MenuItem(
 				{
-					label: 'Exit',
+					label: 'Quit',
 					click: () => ipcRenderer.send('exit-tray')
 				}
 			));

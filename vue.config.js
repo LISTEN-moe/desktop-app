@@ -27,7 +27,7 @@ module.exports = {
 							]
 						}
 					],
-					icon: 'build/256x256.png'
+					icon: 'build/512x512.png'
 				},
 				linux: {
 					target: [
