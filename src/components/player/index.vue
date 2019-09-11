@@ -509,9 +509,9 @@ export default {
 	watch: {
 		async websocket() {
 			if (this.loggedIn) await this.checkFavorite();
-			if (this.playing) this.updateDiscordActivity();
 			if (this.$refs && this.$refs.slider) this.$nextTick(() => this.$refs.slider.refresh());
 			this.buildTray();
+			this.updateActivity();
 		},
 		loggedIn() {
 			this.buildTray();
@@ -556,6 +556,10 @@ export default {
 			}
 		};
 		if (!this.audio.audio.paused) MUSIC_VISUALS.start();
+
+		ipcRenderer.on('togglePlaying', () => {
+			this.togglePlaying();
+		});
 	},
 	beforeDestroy() {
 		if (this.tray) this.tray.destroy();
@@ -651,22 +655,32 @@ export default {
 			window.localStorage ? localStorage.setItem('volume', player.volume) : null;
 			this.volume = player.volume * 100;
 		},
-		updateDiscordActivity() {
+		updateActivity() {
 			const artists = this.currentArtists.reduce((out, artist) => {
 				out += `${this.preferRomaji ? artist.nameRomaji ? artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji}${this.currentArtists.length > 1 ? ', ' : ''}`;
 				return out;
 			}, '');
-			ipcRenderer.send('updateDiscordActivity', {
-				details: this.currentSong.name.length >= 50 ? this.currentSong.name.substring(0, 50) : this.currentSong.name,
-				state: artists.length >= 50 ? artists.substring(0, 50) : artists,
-				startTimestamp: new Date(this.websocket.startTime).getTime(),
-				endTimestamp: new Date(this.websocket.startTime).getTime() + new Date(this.websocket.song.duration * 1000).getTime(),
-				largeImageKey: 'jpop',
-				largeImageText: 'LISTEN.moe',
-				smallImageKey: 'play',
-				smallImageText: 'Playing',
-				instance: false
+
+			ipcRenderer.send('updateSong', {
+				title: this.currentSong.name.length >= 50 ? this.currentSong.name.substring(0, 50) : this.currentSong.name,
+				artist: artists.length >= 50 ? artists.substring(0, 50) : artists,
+				album: currentAlbum.name,
+				albumImage: this.albumCover
 			});
+
+			if (this.playing) {
+				ipcRenderer.send('updateDiscordActivity', {
+					details: this.currentSong.name.length >= 50 ? this.currentSong.name.substring(0, 50) : this.currentSong.name,
+					state: artists.length >= 50 ? artists.substring(0, 50) : artists,
+					startTimestamp: new Date(this.websocket.startTime).getTime(),
+					endTimestamp: new Date(this.websocket.startTime).getTime() + new Date(this.websocket.song.duration * 1000).getTime(),
+					largeImageKey: 'jpop',
+					largeImageText: 'LISTEN.moe',
+					smallImageKey: 'play',
+					smallImageText: 'Playing',
+					instance: false
+				});
+			}
 		},
 		async checkFavorite() {
 			if (!this.websocket) return;
@@ -718,11 +732,13 @@ export default {
 				player.play();
 				MUSIC_VISUALS.start();
 				this.$store.commit('playing', true);
-				this.updateDiscordActivity();
+				ipcRenderer.send('changePlaying', { playing: false });
+				this.updateActivity();
 				return;
 			}
 			player.pause();
 			this.$store.commit('playing', false);
+			ipcRenderer.send('changePlaying', { playing: true });
 			MUSIC_VISUALS.stop();
 			player.currentTime = 0;
 			player.src = '';
