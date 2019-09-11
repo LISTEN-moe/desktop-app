@@ -1,7 +1,7 @@
 name: Release
 on:
   release:
-    types: [published, prereleased]
+    types: [published]
 jobs:
   artifact_linux:
     name: Upload Artifact (Linux)
