@@ -25,7 +25,7 @@ async function createWindow() {
 	const pos = store.get('windowPosition');
 
 	win = new BrowserWindow({
-		title: 'LISTEN.MOE - Desktop App',
+		title: 'LISTEN.moe',
 		// eslint-disable-next-line no-undef
 		icon: join(__static, 'logo.png'),
 		width: size[0],

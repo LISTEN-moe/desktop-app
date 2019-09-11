@@ -679,6 +679,7 @@ export default {
 		},
 		buildTray() {
 			if (!this.tray) this.tray = new Tray(join(__static, 'logo-trans.png'));
+			this.tray.setToolTip('LISTEN.moe')
 			this.tray.setContextMenu(this.buildMenu());
 		}
 	}
