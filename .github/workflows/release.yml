@@ -55,7 +55,7 @@ jobs:
 
   artifact_windows:
     name: Upload Artifact (Windows)
-    runs-on: windows-2016
+    runs-on: windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
