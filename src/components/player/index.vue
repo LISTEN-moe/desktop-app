@@ -245,7 +245,7 @@
 					<span v-for="(artist, index) in currentArtists"
 						:key="artist.id"
 						class="player-song-artist">
-						<a :href="`https://beta.listen.moe/artists/${artist.id}`">
+						<a :href="`https://listen.moe/artists/${artist.id}`">
 							{{ preferRomaji ? artist.nameRomaji ? artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji }}
 						</a>
 						<template v-if="index < currentArtists.length - 1">, </template>
@@ -370,7 +370,7 @@ export default {
 			if (this.websocket && this.websocket.requester) {
 				return {
 					name: this.websocket.requester.displayName,
-					link: `https://beta.listen.moe/u/${this.websocket.requester.username}`
+					link: `https://listen.moe/u/${this.websocket.requester.username}`
 				};
 			}
 			return null;
@@ -420,7 +420,7 @@ export default {
 						? this.websocket.song.sources[0].name
 						: this.websocket.song.sources[0].nameRomaji;
 
-				source.link = `https://beta.listen.moe/sources/${this.websocket.song.sources[0].id}`;
+				source.link = `https://listen.moe/sources/${this.websocket.song.sources[0].id}`;
 				return source;
 			}
 			return null;
@@ -438,7 +438,7 @@ export default {
 						? this.websocket.song.albums[0].name
 						: this.websocket.song.albums[0].nameRomaji;
 
-				album.link = `https://beta.listen.moe/albums/${this.websocket.song.albums[0].id}`;
+				album.link = `https://listen.moe/albums/${this.websocket.song.albums[0].id}`;
 				return album;
 			}
 			return null;
