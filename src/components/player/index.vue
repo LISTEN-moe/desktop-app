@@ -208,6 +208,27 @@
 			}
 		}
 	}
+	#app.kpop .playerContainer .radio-switch button:hover {
+		color: $baseBlue;
+	}
+
+	#app.kpop .playerContainer .player {
+		.info {
+			a {
+				color: $baseBlue;
+			}
+
+			.eventTime span {
+				color: $baseBlue;
+			}
+		}
+
+		.artistContainer {
+			a {
+				color: $baseBlue;
+			}
+		}
+	}
 </style>
 
 <template>
