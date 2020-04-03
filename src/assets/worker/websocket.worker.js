@@ -7,7 +7,7 @@ function heartbeat(ws, interval) {
 }
 
 function connect() {
-	let ws = new WebSocket('wss://listen.moe/beta_gateway');
+	let ws = new WebSocket('wss://listen.moe/gateway_v2');
 
 	ws.onopen = () => {
 		console.log('%c> Websocket connection established.', 'color: #008000;');

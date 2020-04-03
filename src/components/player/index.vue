@@ -461,6 +461,16 @@ export default {
 		},
 		loggedIn() {
 			this.buildTray();
+		},
+		radioType() {
+			this.buildTray();
+			if (this.playing) {
+				this.togglePlaying();
+				this.togglePlaying();
+			}
+		},
+		playing() {
+			this.buildTray();
 		}
 	},
 	mounted() {
@@ -502,9 +512,13 @@ export default {
 			const menu = new Menu();
 			menu.append(new MenuItem(
 				{
-					label: 'Switch to kpop',
-					type: 'checkbox',
-					checked: this.isJpop ? false : true,
+					label: this.playing ? 'Pause' : 'Play',
+					click: () => this.togglePlaying()
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					label: this.radioType === 'jpop' ? 'Switch to kpop' : 'Switch to jpop',
 					click: () => {
 						if (this.radioType === 'kpop') this.$store.commit('radioType', 'jpop');
 						else this.$store.commit('radioType', 'kpop');
