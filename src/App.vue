@@ -90,6 +90,7 @@ export default {
 				}
 			} catch {}
 		}
+		if (localStorage.radioType) this.$store.dispatch('setRadioType', localStorage.radioType);
 		this.$store.dispatch('setInitialState');
 
 		this.worker = new WebSocketWorker();

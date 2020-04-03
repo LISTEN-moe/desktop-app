@@ -540,10 +540,7 @@ export default {
 			menu.append(new MenuItem(
 				{
 					label: this.radioType === 'jpop' ? 'Switch to kpop' : 'Switch to jpop',
-					click: () => {
-						if (this.radioType === 'kpop') this.$store.commit('radioType', 'jpop');
-						else this.$store.commit('radioType', 'kpop');
-					}
+					click: () => this.$store.dispatch('setRadioType', this.radioType === 'jpop' ? 'kpop' : 'jpop')
 				}
 			));
 			menu.append(new MenuItem(
