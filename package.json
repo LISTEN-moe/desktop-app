@@ -11,7 +11,7 @@
 	"scripts": {
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
-		"electron:build": "vue-cli-service electron:build",
+		"electron:build": "vue-cli-service electron:build -p never",
 		"electron:serve": "vue-cli-service electron:serve",
 		"postinstall": "electron-builder install-app-deps"
 	},
