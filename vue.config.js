@@ -42,7 +42,6 @@ module.exports = {
 					icon: 'build/256x256.png'
 				},
 				appImage: {
-					systemIntegration: 'ask',
 					category: 'Audio'
 				}
 			}
