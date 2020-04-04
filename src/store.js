@@ -16,7 +16,9 @@ export default new Store({
 		eventStarts: true,
 		enableGaps: true,
 		smallAlbumArt: false,
-		alwaysOnTop: true
+		alwaysOnTop: true,
+		hideFromTaskbar: false,
+		minimizeToTray: true
 	},
 	mutations: {
 		loggedIn(state, payload) {
@@ -82,6 +84,12 @@ export default new Store({
 		},
 		alwaysOnTop(state, payload) {
 			state.alwaysOnTop = payload;
+		},
+		hideFromTaskbar(state, payload) {
+			state.hideFromTaskbar = payload;
+		},
+		minimizeToTray(state, payload) {
+			state.minimizeToTray = payload;
 		}
 	},
 	actions: {
@@ -100,7 +108,7 @@ export default new Store({
 			localStorage.setItem(option, value);
 		},
 		setInitialState({ dispatch }) {
-			const whatToPopulate = ['preferRomaji', 'eventStarts', 'enableGaps', 'smallAlbumArt', 'alwaysOnTop'];
+			const whatToPopulate = ['preferRomaji', 'eventStarts', 'enableGaps', 'smallAlbumArt', 'alwaysOnTop', 'hideFromTaskbar', 'minimizeToTray'];
 
 			for (const key of whatToPopulate) {
 				const storageValue = localStorage.getItem(key);
