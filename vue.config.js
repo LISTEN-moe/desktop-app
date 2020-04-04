@@ -4,7 +4,7 @@ module.exports = {
 		electronBuilder: {
 			builderOptions: {
 				appId: 'moe.listen.desktop',
-				productName: 'LISTEN.moe - Desktop App',
+				productName: 'LISTEN.moe',
 				copyright: 'Copyright © 2018-2019 iCrawl',
 				icon: 'build/512x512.png',
 				win: {
@@ -15,7 +15,8 @@ module.exports = {
 								'x64'
 							]
 						}
-					]
+					],
+					icon: 'build/icon.ico'
 				},
 				mac: {
 					target: [
@@ -25,7 +26,8 @@ module.exports = {
 								'x64'
 							]
 						}
-					]
+					],
+					icon: 'build/512x512.png'
 				},
 				linux: {
 					target: [
@@ -36,6 +38,11 @@ module.exports = {
 							]
 						}
 					],
+					category: 'Audio',
+					icon: 'build/256x256.png'
+				},
+				appImage: {
+					systemIntegration: 'ask',
 					category: 'Audio'
 				}
 			}

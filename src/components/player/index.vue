@@ -152,16 +152,19 @@
 				z-index: 9;
 				transition: opacity .3s ease-in-out;
 				opacity: .75;
-				// opacity: 0;
-				// pointer-events: none;
 			}
 
-			/*
-			&:hover .settingsIcon {
-				opacity: 1;
-				pointer-events: auto;
+			.hideIcon {
+				position: absolute;
+				top: 0;
+				right: 1.2rem;
+				margin: 0;
+				transform: scale3d(0.5, 0.5, 1) !important;
+				z-index: 9;
+				transition: opacity .3s ease-in-out;
+				opacity: .75;
 			}
-			*/
+
 		}
 
 		.favoriteButton {
@@ -246,6 +249,10 @@
 			<Budicon class="settingsIcon"
 				icon="settings"
 				@click.native.stop.prevent="openSettings" />
+			<Budicon v-if="minimizeToTray"
+				class="hideIcon"
+				icon="cross"
+				@click.native.stop.prevent="hideWindow" />
 			<canvas ref="canvas" />
 			<div class="sliderContainer"
 				:class="{ active: isVolumeSliderOpen }">
@@ -387,6 +394,9 @@ export default {
 		websocket() {
 			return this.$store.state.websocket;
 		},
+		hideFromTaskbar() {
+			return this.$store.state.hideFromTaskbar;
+		},
 		currentRequester() {
 			if (this.websocket && this.websocket.requester) {
 				return {
@@ -472,6 +482,9 @@ export default {
 		},
 		smallAlbumArt() {
 			return this.$store.state.smallAlbumArt;
+		},
+		minimizeToTray() {
+			return this.$store.state.minimizeToTray;
 		}
 	},
 	watch: {
@@ -498,6 +511,8 @@ export default {
 		this.volume = window.localStorage ? localStorage.getItem('volume') ? localStorage.getItem('volume') * 100 : 50 : 50;
 
 		this.buildTray();
+
+		this.tray.on('double-click', () => ipcRenderer.send('show-tray'));
 
 		MUSIC_VISUALS = {
 			start: () => {
@@ -529,8 +544,17 @@ export default {
 		openSettings() {
 			ipcRenderer.send('settingsModal');
 		},
+		hideWindow() {
+			ipcRenderer.send('hide-tray');
+		},
 		buildMenu() {
 			const menu = new Menu();
+      menu.append(new MenuItem(
+				{
+					label: 'Open LISTEN.moe',
+					click: () => ipcRenderer.send('show-tray')
+				}
+			));
 			menu.append(new MenuItem(
 				{
 					label: this.playing ? 'Pause' : 'Play',
@@ -550,7 +574,6 @@ export default {
 					}
 				}
 			));
-			menu.append(new MenuItem({ type: 'separator' }));
 			menu.append(new MenuItem(
 				{
 					label: this.loggedIn ? 'Logout' : 'Login',
@@ -567,8 +590,8 @@ export default {
 			menu.append(new MenuItem({ type: 'separator' }));
 			menu.append(new MenuItem(
 				{
-					label: 'Exit',
-					click: () => app.quit()
+					label: 'Quit',
+					click: () => ipcRenderer.send('exit-tray')
 				}
 			));
 
@@ -690,6 +713,7 @@ export default {
 		},
 		buildTray() {
 			if (!this.tray) this.tray = new Tray(join(__static, 'logo-trans.png'));
+			this.tray.setToolTip('LISTEN.moe')
 			this.tray.setContextMenu(this.buildMenu());
 		}
 	}

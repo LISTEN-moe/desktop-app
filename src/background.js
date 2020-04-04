@@ -2,6 +2,7 @@ import { app, protocol, BrowserWindow, shell, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import Store from './electron-store';
+import { join } from 'path';
 
 const { Client } = require('discord-rpc');
 const rpc = new Client({ transport: 'ipc' });
@@ -10,6 +11,7 @@ const rpc = new Client({ transport: 'ipc' });
 let win;
 let loginModal;
 let settingsModal;
+let minimizeToTray;
 
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 async function createWindow() {
@@ -24,8 +26,9 @@ async function createWindow() {
 	const pos = store.get('windowPosition');
 
 	win = new BrowserWindow({
-		title: 'LISTEN.MOE - Desktop App',
-		icon: 'public/logo.png',
+		title: 'LISTEN.moe',
+		// eslint-disable-next-line no-undef
+		icon: join(__static, 'logo.png'),
 		width: size[0],
 		minWidth: 400,
 		height: 80,
@@ -48,12 +51,24 @@ async function createWindow() {
 		win.loadURL('app://./index.html');
 	}
 
-	// win.webContents.openDevTools();
-
 	win.once('ready-to-show', () => {
 		win.show();
 		win.focus();
 	});
+
+	win.on('minimize', event => {
+		if (!minimizeToTray) return;
+		event.preventDefault();
+		win.hide();
+	});
+
+	ipcMain.on('show-tray', () => {
+		win.show();
+		win.focus();
+	});
+
+	ipcMain.on('hide-tray', () => win.hide());
+	ipcMain.on('exit-tray', () => app.quit());
 
 	win.on('closed', () => {
 		win = null;
@@ -87,7 +102,9 @@ async function createWindow() {
 
 		loginModal = new BrowserWindow({
 			width: 350,
-			height: 500,
+			height: 400,
+			// eslint-disable-next-line no-undef
+			icon: join(__static, 'logo.png'),
 			frame: false,
 			transparent: true,
 			parent: win,
@@ -113,7 +130,9 @@ async function createWindow() {
 
 		settingsModal = new BrowserWindow({
 			width: 500,
-			height: 595,
+			height: 760,
+			// eslint-disable-next-line no-undef
+			icon: join(__static, 'logo.png'),
 			frame: false,
 			transparent: true,
 			parent: win,
@@ -140,7 +159,10 @@ async function createWindow() {
 		win.webContents.send('login', arg);
 		if (settingsModal) settingsModal.webContents.send('login', arg);
 	});
-	ipcMain.on('settingsChange', (_, arg) => win.webContents.send('playerOptionsChange', arg));
+	ipcMain.on('settingsChange', (_, arg) => {
+		if (arg[0] === 'minimizeToTray') minimizeToTray = arg[1];
+		win.webContents.send('playerOptionsChange', arg);
+	});
 }
 
 // Disable hardware acceleration on Linux for transparent background
