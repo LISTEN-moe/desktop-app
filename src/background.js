@@ -11,6 +11,7 @@ const rpc = new Client({ transport: 'ipc' });
 let win;
 let loginModal;
 let settingsModal;
+let minimizeToTray;
 
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 async function createWindow() {
@@ -50,15 +51,13 @@ async function createWindow() {
 		win.loadURL('app://./index.html');
 	}
 
-	// win.webContents.openDevTools();
-
 	win.once('ready-to-show', () => {
 		win.show();
 		win.focus();
 	});
 
-	// TODO: Use setting
 	win.on('minimize', event => {
+		if (!minimizeToTray) return;
 		event.preventDefault();
 		win.hide();
 	});
@@ -69,7 +68,6 @@ async function createWindow() {
 	});
 
 	ipcMain.on('hide-tray', () => win.hide());
-
 	ipcMain.on('exit-tray', () => app.quit());
 
 	win.on('closed', () => {
@@ -158,7 +156,10 @@ async function createWindow() {
 		win.webContents.send('login', arg);
 		if (settingsModal) settingsModal.webContents.send('login', arg);
 	});
-	ipcMain.on('settingsChange', (_, arg) => win.webContents.send('playerOptionsChange', arg));
+	ipcMain.on('settingsChange', (_, arg) => {
+		if (arg[0] === 'minimizeToTray') minimizeToTray = arg[1];
+		win.webContents.send('playerOptionsChange', arg);
+	});
 }
 
 // Disable hardware acceleration on Linux for transparent background

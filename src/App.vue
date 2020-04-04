@@ -91,7 +91,7 @@ export default {
 
 		ipcRenderer.send('settingsChange', ['alwaysOnTop', this.alwaysOnTop]);
 		ipcRenderer.send('settingsChange', ['hideFromTaskbar', this.hideFromTaskbar]);
-		ipcRenderer.send('settingsChange', ['minimizeToTray', this.minimizeToTray])
+		ipcRenderer.send('settingsChange', ['minimizeToTray', this.minimizeToTray]);
 		ipcRenderer.on('login', (_, { token, user }) => {
 			this.$store.dispatch('login', { token, user });
 		});
@@ -102,7 +102,6 @@ export default {
 			else if (option === 'smallAlbumArt' && !value) electronWindow.setSize(electronWindow.getBounds().width, 230, true);
 			else if (option === 'alwaysOnTop') electronWindow.setAlwaysOnTop(value);
 			else if (option === 'hideFromTaskbar') electronWindow.setSkipTaskbar(value);
-			else if (option === 'minimizeToTray') console.log('gettin there');
 			this.$store.dispatch('setState', { option, value });
 		});
 	}

@@ -228,7 +228,8 @@
 			<Budicon class="settingsIcon"
 				icon="settings"
 				@click.native.stop.prevent="openSettings" />
-			<Budicon class="hideIcon"
+			<Budicon v-if="minimizeToTray"
+				class="hideIcon"
 				icon="cross"
 				@click.native.stop.prevent="hideWindow" />
 			<canvas ref="canvas" />
@@ -460,6 +461,9 @@ export default {
 		},
 		smallAlbumArt() {
 			return this.$store.state.smallAlbumArt;
+		},
+		minimizeToTray() {
+			return this.$store.state.minimizeToTray;
 		}
 	},
 	watch: {
@@ -473,7 +477,6 @@ export default {
 		}
 	},
 	mounted() {
-		
 		this.volume = window.localStorage ? localStorage.getItem('volume') ? localStorage.getItem('volume') * 100 : 50 : 50;
 
 		this.buildTray();
@@ -511,13 +514,13 @@ export default {
 			ipcRenderer.send('settingsModal');
 		},
 		hideWindow() {
-			ipcRenderer.send('hide-tray')
+			ipcRenderer.send('hide-tray');
 		},
 		buildMenu() {
 			const menu = new Menu();
 			menu.append(new MenuItem(
 				{
-					label: 'Open LISTEN.moe', 
+					label: 'Open LISTEN.moe',
 					click: () => ipcRenderer.send('show-tray')
 				}
 			));
