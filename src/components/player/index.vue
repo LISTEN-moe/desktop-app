@@ -211,6 +211,27 @@
 			}
 		}
 	}
+	#app.kpop .playerContainer .radio-switch button:hover {
+		color: $baseBlue;
+	}
+
+	#app.kpop .playerContainer .player {
+		.info {
+			a {
+				color: $baseBlue;
+			}
+
+			.eventTime span {
+				color: $baseBlue;
+			}
+		}
+
+		.artistContainer {
+			a {
+				color: $baseBlue;
+			}
+		}
+	}
 </style>
 
 <template>
@@ -252,7 +273,7 @@
 					<span v-for="(artist, index) in currentArtists"
 						:key="artist.id"
 						class="player-song-artist">
-						<a :href="`https://beta.listen.moe/artists/${artist.id}`">
+						<a :href="`https://listen.moe/artists/${artist.id}`">
 							{{ preferRomaji ? artist.nameRomaji ? artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji }}
 						</a>
 						<template v-if="index < currentArtists.length - 1">, </template>
@@ -380,7 +401,7 @@ export default {
 			if (this.websocket && this.websocket.requester) {
 				return {
 					name: this.websocket.requester.displayName,
-					link: `https://beta.listen.moe/u/${this.websocket.requester.username}`
+					link: `https://listen.moe/u/${this.websocket.requester.username}`
 				};
 			}
 			return null;
@@ -430,7 +451,7 @@ export default {
 						? this.websocket.song.sources[0].name
 						: this.websocket.song.sources[0].nameRomaji;
 
-				source.link = `https://beta.listen.moe/sources/${this.websocket.song.sources[0].id}`;
+				source.link = `https://listen.moe/sources/${this.websocket.song.sources[0].id}`;
 				return source;
 			}
 			return null;
@@ -448,7 +469,7 @@ export default {
 						? this.websocket.song.albums[0].name
 						: this.websocket.song.albums[0].nameRomaji;
 
-				album.link = `https://beta.listen.moe/albums/${this.websocket.song.albums[0].id}`;
+				album.link = `https://listen.moe/albums/${this.websocket.song.albums[0].id}`;
 				return album;
 			}
 			return null;
@@ -473,6 +494,16 @@ export default {
 			if (this.$refs && this.$refs.slider) this.$nextTick(() => this.$refs.slider.refresh());
 		},
 		loggedIn() {
+			this.buildTray();
+		},
+		radioType() {
+			this.buildTray();
+			if (this.playing) {
+				this.togglePlaying();
+				this.togglePlaying();
+			}
+		},
+		playing() {
 			this.buildTray();
 		}
 	},
@@ -518,22 +549,22 @@ export default {
 		},
 		buildMenu() {
 			const menu = new Menu();
-			menu.append(new MenuItem(
+      menu.append(new MenuItem(
 				{
 					label: 'Open LISTEN.moe',
 					click: () => ipcRenderer.send('show-tray')
 				}
 			));
-			menu.append(new MenuItem({ type: 'separator' }));
 			menu.append(new MenuItem(
 				{
-					label: 'Switch to kpop',
-					type: 'checkbox',
-					checked: this.isJpop ? false : true,
-					click: () => {
-						if (this.radioType === 'kpop') this.$store.commit('radioType', 'jpop');
-						else this.$store.commit('radioType', 'kpop');
-					}
+					label: this.playing ? 'Pause' : 'Play',
+					click: () => this.togglePlaying()
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					label: this.radioType === 'jpop' ? 'Switch to kpop' : 'Switch to jpop',
+					click: () => this.$store.dispatch('setRadioType', this.radioType === 'jpop' ? 'kpop' : 'jpop')
 				}
 			));
 			menu.append(new MenuItem(

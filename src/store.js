@@ -115,6 +115,10 @@ export default new Store({
 				if (storageValue && storageValue === 'false') dispatch('setState', { option: key, value: false });
 				else dispatch('setState', { option: key, value: true });
 			}
+		},
+		setRadioType({ commit }, radioType) {
+			commit('radioType', radioType);
+			localStorage.radioType = radioType;
 		}
 	}
 });

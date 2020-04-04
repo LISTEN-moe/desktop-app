@@ -34,7 +34,8 @@
 </style>
 
 <template>
-	<div id="app">
+	<div id="app"
+		:class="radioType">
 		<audio id="audio-player"
 			ref="audio"
 			crossorigin="anonymous"
@@ -46,11 +47,13 @@
 <script>
 import user from '@/gql/queries/user.gql';
 import { ipcRenderer, remote } from 'electron';
+import WebSocketWorker from 'workerize-loader!@/assets/worker/websocket.worker.js';
 
 export default {
 	data() {
 		return {
-			tray: null
+			tray: null,
+			worker: null
 		};
 	},
 	computed: {
@@ -70,6 +73,12 @@ export default {
 			return this.$store.state.minimizeToTray;
 		}
 	},
+	watch: {
+		radioType() {
+			if (!this.worker) return;
+			this.worker.postMessage(this.radioType);
+		}
+	},
 	async mounted() {
 		const token = localStorage.getItem('token');
 		if (token) {
@@ -87,7 +96,14 @@ export default {
 				}
 			} catch {}
 		}
+		if (localStorage.radioType) this.$store.dispatch('setRadioType', localStorage.radioType);
 		this.$store.dispatch('setInitialState');
+
+		this.worker = new WebSocketWorker();
+		this.worker.onmessage = message => {
+			if (message.data.method) return;
+			this.$store.commit('websocket', message.data);
+		};
 
 		ipcRenderer.send('settingsChange', ['alwaysOnTop', this.alwaysOnTop]);
 		ipcRenderer.send('settingsChange', ['hideFromTaskbar', this.hideFromTaskbar]);

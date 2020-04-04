@@ -81,6 +81,9 @@ async function createWindow() {
 
 	win.on('move', async () => {
 		const values = win.getPosition();
+		if (values[1] < 0) values[1] = 0;
+		// Negative Y-Coordinate rebound happens automatically already, but seems to cause a syntax error in the settings json.
+		// Therefore it is manually set to 0 before being saved to the settings.
 		await store.set('windowPosition', values);
 	});
 

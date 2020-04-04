@@ -81,7 +81,7 @@
 				<h1 class="title">Account</h1>
 
 				<a v-if="loggedIn"
-					:href="`https://beta.listen.moe/u/${user.username}`"
+					:href="`https://listen.moe/u/${user.username}`"
 					target="_blank">
 					Logged in as {{ user.displayName }}
 				</a>
