@@ -92,8 +92,6 @@ async function createWindow() {
 		shell.openExternal(url);
 	});
 
-	await rpc.login({ clientId: '383375119827075072' });
-
 	ipcMain.on('updateDiscordActivity', (_, arg) => rpc.setActivity(arg));
 	ipcMain.on('clearDiscordActivity', () => rpc.clearActivity());
 
@@ -163,6 +161,8 @@ async function createWindow() {
 		if (arg[0] === 'minimizeToTray') minimizeToTray = arg[1];
 		win.webContents.send('playerOptionsChange', arg);
 	});
+
+	await rpc.login({ clientId: '383375119827075072' });
 }
 
 // Disable hardware acceleration on Linux for transparent background
