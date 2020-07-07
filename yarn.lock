@@ -11766,9 +11766,9 @@ yargs@^7.0.0:
     yargs-parser "^5.0.0"
 
 yarn@^1.15.0:
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.19.0.tgz#e4fb83762849a9545f95eb077fd0905f7ddae2f0"
-  integrity sha512-QLiMoj+ZHo2kT17x1t7erO6gzR+9xSa5z7Lmei1qYM1Sj37wiIFv67kQcH+nkshsO0f03ImXClfkEKUgnsMreQ==
+  version "1.22.4"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.4.tgz#01c1197ca5b27f21edc8bc472cd4c8ce0e5a470e"
+  integrity sha512-oYM7hi/lIWm9bCoDMEWgffW8aiNZXCWeZ1/tGy0DWrN6vmzjCXIKu2Y21o8DYVBUtiktwKcNoxyGl/2iKLUNGA==
 
 yauzl@2.4.1:
   version "2.4.1"
