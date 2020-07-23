@@ -492,6 +492,7 @@ export default {
 			if (this.loggedIn) await this.checkFavorite();
 			if (this.playing) this.updateDiscordActivity();
 			if (this.$refs && this.$refs.slider) this.$nextTick(() => this.$refs.slider.refresh());
+			this.buildTray();
 		},
 		loggedIn() {
 			this.buildTray();
@@ -504,6 +505,9 @@ export default {
 			}
 		},
 		playing() {
+			this.buildTray();
+		},
+		toggleFavorite() {
 			this.buildTray();
 		}
 	},
@@ -549,10 +553,16 @@ export default {
 		},
 		buildMenu() {
 			const menu = new Menu();
-      menu.append(new MenuItem(
+
+			menu.append(new MenuItem(
 				{
 					label: 'Open LISTEN.moe',
 					click: () => ipcRenderer.send('show-tray')
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					type: 'separator'
 				}
 			));
 			menu.append(new MenuItem(
@@ -569,9 +579,20 @@ export default {
 			));
 			menu.append(new MenuItem(
 				{
-					label: 'Settings', click() {
-						ipcRenderer.send('settingsModal');
-					}
+					label: this.checkFavorite() ? 'Unfavorite song' : 'Favorite song',
+					click: () => this.toggleFavorite(),
+					enabled: this.loggedIn ? true : false
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					type: 'separator'
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					label: 'Settings',
+					click: () => ipcRenderer.send('settingsModal')
 				}
 			));
 			menu.append(new MenuItem(
@@ -713,7 +734,7 @@ export default {
 		},
 		buildTray() {
 			if (!this.tray) this.tray = new Tray(join(__static, 'logo-trans.png'));
-			this.tray.setToolTip('LISTEN.moe')
+			this.tray.setToolTip('LISTEN.moe');
 			this.tray.setContextMenu(this.buildMenu());
 		}
 	}
