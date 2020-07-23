@@ -506,9 +506,6 @@ export default {
 		},
 		playing() {
 			this.buildTray();
-		},
-		toggleFavorite() {
-			this.buildTray();
 		}
 	},
 	mounted() {
@@ -579,7 +576,7 @@ export default {
 			));
 			menu.append(new MenuItem(
 				{
-					label: this.checkFavorite() ? 'Unfavorite song' : 'Favorite song',
+					label: (this.websocket && this.websocket.song && this.websocket.song.favorite) ? 'Unfavorite song' : 'Favorite song',
 					click: () => this.toggleFavorite(),
 					enabled: this.loggedIn ? true : false
 				}
@@ -726,6 +723,7 @@ export default {
 					}
 				});
 				this.websocket.song.favorite = !Boolean(this.websocket.song.favorite);
+				this.buildTray();
 				this.$forceUpdate();
 			} catch (error) {
 				// TODO: Proper feedback
