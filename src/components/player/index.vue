@@ -516,7 +516,7 @@ export default {
 
 		this.buildTray();
 
-		this.tray.on('double-click', () => ipcRenderer.send('show-tray'));
+		this.tray.on('click', () => ipcRenderer.send('show-tray'));
 
 		MUSIC_VISUALS = {
 			start: () => {
