@@ -62,14 +62,17 @@
 			.artistContainer {
 				padding-top: 10px;
 				text-align: left;
+				user-select: none;
 			}
 
 			.titleContainer {
 				padding-bottom: 10px;
 				text-align: left;
+				user-select: none;
 			}
 
 			.info {
+				user-select: none;
 				max-height: 22px;
 				background: linear-gradient(to right, rgba(0,0,0,0) 0%,rgba(0,0,0,0.2) 30%,rgba(0, 0, 0, 0.2) 70%,rgba(0,0,0,0) 100%);
 
