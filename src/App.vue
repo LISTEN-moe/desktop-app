@@ -102,6 +102,35 @@ export default {
 		this.worker = new WebSocketWorker();
 		this.worker.onmessage = message => {
 			if (message.data.method) return;
+
+			/*
+				TODO:
+				Need to rewrite all of this since the api and the websocket return different
+				format for the character data. If anyone clicks on `previous songs`, the parseData
+				function that parses the incoming data doesn't work with this format.
+
+				A problem for tomorrow
+			*/
+			if (message.data.song.characters && message.data.song.characters.length) {
+				message.data.song.artists.forEach(artist => {
+					if (!artist.characters || !artist.characters.length) return;
+					const characters = [];
+					artist.characters.forEach(character => {
+						const found = message.data.song.characters.find(el => el.id === character.id);
+						if (found) characters.push(found);
+					});
+					artist.characters = characters;
+				});
+			}
+
+			// Delete character data from lastPlayed so the table displays correctly
+			message.data.lastPlayed.forEach(song => {
+				song.artists.forEach(artist => {
+					delete artist.characters;
+				});
+				delete song.characters;
+			});
+
 			this.$store.commit('websocket', message.data);
 		};
 

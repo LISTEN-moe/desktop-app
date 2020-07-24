@@ -71,7 +71,7 @@
 
 			.info {
 				max-height: 22px;
-				background: linear-gradient(to right, rgba(0,0,0,0) 0%,rgba(0,0,0,0.3) 22%,rgba(0,0,0,0.3) 50%,rgba(0, 0, 0, 0.3) 80%,rgba(0,0,0,0) 100%);
+				background: linear-gradient(to right, rgba(0,0,0,0) 0%,rgba(0,0,0,0.2) 30%,rgba(0, 0, 0, 0.2) 70%,rgba(0,0,0,0) 100%);
 
 				.requestedBy, .eventTime {
 					font-size: .8rem;
@@ -237,12 +237,12 @@
 <template>
 	<div class="playerContainer"
 		:class="{ gaps: enableGaps, big: !smallAlbumArt, hasAlbumArt: currentAlbum && albumCover }">
-		<div class="playButton shadow">
+		<div class="playButton">
 			<Budicon :icon="playing ? 'pause' : 'play'"
 				y="-2"
 				@click.native.stop.prevent="togglePlaying" />
 		</div>
-		<div class="player shadow"
+		<div class="player"
 			:class="{ hasRequester: currentRequester || currentEvent }">
 			<div class="backdrop"
 				:class="{ active: isVolumeSliderOpen }" />
@@ -273,7 +273,19 @@
 					<span v-for="(artist, index) in currentArtists"
 						:key="artist.id"
 						class="player-song-artist">
-						<a :href="`https://listen.moe/artists/${artist.id}`">
+						<template v-if="artist.characters && artist.characters.length && artist.characters[0].name">
+							<template v-for="(character, index2) in artist.characters">
+								<a :key="character.id" :href="`https://listen.moe/characters/${character.id}`">
+									{{ preferRomaji ? character.nameRomaji ? character.nameRomaji : character.name ? character.name : character.nameRomaji : character.name ? character.name : character.nameRomaji }}
+								</a>
+
+								<a :key="`artist${character.id}`" :href="`https://listen.moe/artists/${artist.id}`">
+									(CV: {{ preferRomaji ? artist.nameRomaji ? artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji }})
+								</a>
+								<template v-if="index2 < artist.characters.length - 1">, </template>
+							</template>
+						</template>
+						<a v-else :href="`https://listen.moe/artists/${artist.id}`">
 							{{ preferRomaji ? artist.nameRomaji ? artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji }}
 						</a>
 						<template v-if="index < currentArtists.length - 1">, </template>
@@ -303,24 +315,28 @@
 				</div>
 			</div>
 		</div>
-		<div class="favoriteButton shadow">
+		<div class="favoriteButton">
 			<Budicon v-if="websocket"
 				:icon="websocket.song.favorite ? 'filledStar' : 'star'"
 				@click.native.stop.prevent="toggleFavorite" />
 		</div>
-		<div class="volumeButton shadow"
+		<div class="volumeButton"
 			@wheel.stop.prevent="scrollVolume">
 			<Budicon icon="volume"
 				@click.native.stop.prevent="isVolumeSliderOpen = !isVolumeSliderOpen" />
 		</div>
 
-		<div class="albumContainer"
+		<div v-if="currentAlbum"
+			class="albumContainer"
 			:class="{ big: !smallAlbumArt }">
-			<div v-if="currentAlbum && albumCover"
-				class="pictureContainer shadow">
+			<div class="pictureContainer">
 				<a :href="currentAlbum.link">
-					<img class="shadow"
+					<img v-if="albumCover"
+						class="shadow"
 						:src="`https://cdn.listen.moe/covers/${albumCover}`">
+					<img v-else
+						class="shadow"
+						src="@/assets/images/blank-dark.png">
 				</a>
 			</div>
 		</div>
