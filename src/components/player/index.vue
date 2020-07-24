@@ -492,6 +492,7 @@ export default {
 			if (this.loggedIn) await this.checkFavorite();
 			if (this.playing) this.updateDiscordActivity();
 			if (this.$refs && this.$refs.slider) this.$nextTick(() => this.$refs.slider.refresh());
+			this.buildTray();
 		},
 		loggedIn() {
 			this.buildTray();
@@ -512,7 +513,7 @@ export default {
 
 		this.buildTray();
 
-		this.tray.on('double-click', () => ipcRenderer.send('show-tray'));
+		this.tray.on('click', () => ipcRenderer.send('show-tray'));
 
 		MUSIC_VISUALS = {
 			start: () => {
@@ -549,10 +550,16 @@ export default {
 		},
 		buildMenu() {
 			const menu = new Menu();
-      menu.append(new MenuItem(
+
+			menu.append(new MenuItem(
 				{
 					label: 'Open LISTEN.moe',
 					click: () => ipcRenderer.send('show-tray')
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					type: 'separator'
 				}
 			));
 			menu.append(new MenuItem(
@@ -569,9 +576,20 @@ export default {
 			));
 			menu.append(new MenuItem(
 				{
-					label: 'Settings', click() {
-						ipcRenderer.send('settingsModal');
-					}
+					label: (this.websocket && this.websocket.song && this.websocket.song.favorite) ? 'Unfavorite song' : 'Favorite song',
+					click: () => this.toggleFavorite(),
+					enabled: this.loggedIn
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					type: 'separator'
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					label: 'Settings',
+					click: () => ipcRenderer.send('settingsModal')
 				}
 			));
 			menu.append(new MenuItem(
@@ -705,6 +723,7 @@ export default {
 					}
 				});
 				this.websocket.song.favorite = !Boolean(this.websocket.song.favorite);
+				this.buildTray();
 				this.$forceUpdate();
 			} catch (error) {
 				// TODO: Proper feedback
@@ -713,7 +732,7 @@ export default {
 		},
 		buildTray() {
 			if (!this.tray) this.tray = new Tray(join(__static, 'logo-trans.png'));
-			this.tray.setToolTip('LISTEN.moe')
+			this.tray.setToolTip('LISTEN.moe');
 			this.tray.setContextMenu(this.buildMenu());
 		}
 	}
