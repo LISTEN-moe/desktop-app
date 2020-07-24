@@ -5,7 +5,7 @@ module.exports = {
 			builderOptions: {
 				appId: 'moe.listen.desktop',
 				productName: 'LISTEN.moe',
-				copyright: 'Copyright © 2018-2019 iCrawl',
+				copyright: 'Copyright © 2018-2020 iCrawl',
 				icon: 'build/512x512.png',
 				win: {
 					target: [

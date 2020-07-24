@@ -17,7 +17,7 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: tru
 async function createWindow() {
 	const store = new Store({
 		defaults: {
-			windowSize: [800, 80],
+			windowSize: [800, 64],
 			windowPosition: [null, null]
 		}
 	});
@@ -31,8 +31,8 @@ async function createWindow() {
 		icon: join(__static, 'logo.png'),
 		width: size[0],
 		minWidth: 400,
-		height: 80,
-		minHeight: 80,
+		height: 64,
+		minHeight: 64,
 		x: pos[0],
 		y: pos[1],
 		frame: false,
