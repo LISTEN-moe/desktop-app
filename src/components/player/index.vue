@@ -578,7 +578,7 @@ export default {
 				{
 					label: (this.websocket && this.websocket.song && this.websocket.song.favorite) ? 'Unfavorite song' : 'Favorite song',
 					click: () => this.toggleFavorite(),
-					enabled: this.loggedIn ? true : false
+					enabled: this.loggedIn
 				}
 			));
 			menu.append(new MenuItem(
