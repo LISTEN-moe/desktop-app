@@ -664,7 +664,7 @@ export default {
 			ipcRenderer.send('changeTrack', {
 				title: this.currentSong.name.length >= 50 ? this.currentSong.name.substring(0, 50) : this.currentSong.name,
 				artist: artists.length >= 50 ? artists.substring(0, 50) : artists,
-				album: this.currentAlbum ? this.currenAlbum.name : '',
+				album: this.currentAlbum ? this.currentAlbum.name : '',
 				albumImage: `https://cdn.listen.moe/covers/${this.albumCover}`
 			});
 
