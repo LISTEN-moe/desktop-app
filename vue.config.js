@@ -2,6 +2,13 @@ module.exports = {
 	productionSourceMap: false,
 	pluginOptions: {
 		electronBuilder: {
+			nodeIntegration: true,
+			externals: [
+				'@nodert-win10-rs4/windows.foundation',
+				'@nodert-win10-rs4/windows.media',
+				'@nodert-win10-rs4/windows.media.playback',
+				'@nodert-win10-rs4/windows.storage.streams'
+			],
 			builderOptions: {
 				appId: 'moe.listen.desktop',
 				productName: 'LISTEN.moe',

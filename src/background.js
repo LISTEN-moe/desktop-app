@@ -3,9 +3,12 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import Store from './electron-store';
 import { join } from 'path';
+import os from 'os';
 
 const { Client } = require('discord-rpc');
 const rpc = new Client({ transport: 'ipc' });
+
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 
 // Global reference because javascript GC
 let win;
@@ -161,6 +164,13 @@ async function createWindow() {
 		if (arg[0] === 'minimizeToTray') minimizeToTray = arg[1];
 		win.webContents.send('playerOptionsChange', arg);
 	});
+
+	if (process.platform === 'win32' && os.release().startsWith('10')) {
+		try {
+			const { win10Controls } = require('./win10');
+			win10Controls(ipcMain, win.webContents);
+		} catch {}
+	}
 
 	await rpc.login({ clientId: '383375119827075072' });
 }
