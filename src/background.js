@@ -1,9 +1,10 @@
-import { app, protocol, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import Store from './electron-store';
 import { join } from 'path';
 import os from 'os';
+import fetch from 'node-fetch';
 
 const { Client } = require('discord-rpc');
 const rpc = new Client({ transport: 'ipc' });
@@ -173,6 +174,25 @@ async function createWindow() {
 	}
 
 	await rpc.login({ clientId: '383375119827075072' });
+
+	try {
+		const github = await fetch('https://api.github.com/repos/LISTEN-moe/desktop-app/releases/latest');
+		const json = await github.json();
+		if (!json || !json.name) return;
+		if (app.getVersion() === json.name) return;
+
+		const options = {
+			type: 'question',
+			buttons: ['No', 'Yes'],
+			defaultId: 1,
+			title: 'LISTEN.moe Desktop App',
+			message: `Version ${json.name} is available`,
+			detail: 'Do you want to go to the releases page to download the latest version?'
+		};
+
+		const { response } = await dialog.showMessageBox(null, options);
+		if (response) shell.openExternal('https://github.com/LISTEN-moe/desktop-app/releases/latest');
+	} catch {}
 }
 
 // Disable hardware acceleration on Linux for transparent background
