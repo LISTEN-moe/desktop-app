@@ -1,7 +1,7 @@
-import { MediaPlaybackStatus, MediaPlaybackType, SystemMediaTransportControlsButton } from '@nodert-win10/windows.media';
-import { BackgroundMediaPlayer } from '@nodert-win10/windows.media.playback';
-import { RandomAccessStreamReference } from '@nodert-win10/windows.storage.streams';
-import { Uri } from '@nodert-win10/windows.foundation';
+import { MediaPlaybackStatus, MediaPlaybackType, SystemMediaTransportControlsButton } from '@nodert-win10-rs4/windows.media';
+import { BackgroundMediaPlayer } from '@nodert-win10-rs4/windows.media.playback';
+import { RandomAccessStreamReference } from '@nodert-win10-rs4/windows.storage.streams';
+import { Uri } from '@nodert-win10-rs4/windows.foundation';
 
 const Controls = BackgroundMediaPlayer.current.systemMediaTransportControls;
 

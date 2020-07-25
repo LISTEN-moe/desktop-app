@@ -263,10 +263,10 @@
 					ref="slider"
 					v-model="volume"
 					tooltip="hover"
-					tooltipDir="bottom"
-					:sliderStyle="{ background: radioType === 'jpop' ? '#c40447' : '#1587c9'}"
-					:processStyle="{ background: radioType === 'jpop' ? '#ff015b' : '#30A9ED'}"
-					:tooltipStyle="{ backgroundColor: '#1d1f2b', borderColor: '#1d1f2b' }"
+					tooltip-dir="bottom"
+					:slider-style="{ background: radioType === 'jpop' ? '#c40447' : '#1587c9'}"
+					:process-style="{ background: radioType === 'jpop' ? '#ff015b' : '#30A9ED'}"
+					:tooltip-style="{ backgroundColor: '#1d1f2b', borderColor: '#1d1f2b' }"
 					@callback="setVolume" />
 			</div>
 			<Marquee v-if="currentArtists"
@@ -661,11 +661,11 @@ export default {
 				return out;
 			}, '');
 
-			ipcRenderer.send('updateSong', {
+			ipcRenderer.send('changeTrack', {
 				title: this.currentSong.name.length >= 50 ? this.currentSong.name.substring(0, 50) : this.currentSong.name,
 				artist: artists.length >= 50 ? artists.substring(0, 50) : artists,
-				album: currentAlbum.name,
-				albumImage: this.albumCover
+				album: this.currentAlbum ? this.currenAlbum.name : '',
+				albumImage: `https://cdn.listen.moe/covers/${this.albumCover}`
 			});
 
 			if (this.playing) {
@@ -732,13 +732,13 @@ export default {
 				player.play();
 				MUSIC_VISUALS.start();
 				this.$store.commit('playing', true);
-				ipcRenderer.send('changePlaying', { playing: false });
+				ipcRenderer.send('changePlaying', { playing: true });
 				this.updateActivity();
 				return;
 			}
 			player.pause();
 			this.$store.commit('playing', false);
-			ipcRenderer.send('changePlaying', { playing: true });
+			ipcRenderer.send('changePlaying', { playing: false });
 			MUSIC_VISUALS.stop();
 			player.currentTime = 0;
 			player.src = '';

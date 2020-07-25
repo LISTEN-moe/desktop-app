@@ -1,0 +1,15 @@
+diff --git a/node_modules/vue-cli-plugin-electron-builder/lib/webpackConfig.js b/node_modules/vue-cli-plugin-electron-builder/lib/webpackConfig.js
+index 7e67a93..371565a 100644
+--- a/node_modules/vue-cli-plugin-electron-builder/lib/webpackConfig.js
++++ b/node_modules/vue-cli-plugin-electron-builder/lib/webpackConfig.js
+@@ -94,8 +94,8 @@ function getExternals (api, pluginOptions) {
+     }
+     return true
+   })
+-  const { dependencies } = require(api.resolve('./package.json'))
+-  const externalsList = Object.keys(dependencies || {}).reduce(
++  const { dependencies, optionalDependencies } = require(api.resolve('./package.json'))
++  const externalsList = Object.keys({ ...dependencies, ...optionalDependencies } || {}).reduce(
+     (depList, dep) => {
+       try {
+         if (process.env.VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK) {

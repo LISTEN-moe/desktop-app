@@ -8,6 +8,8 @@ import os from 'os';
 const { Client } = require('discord-rpc');
 const rpc = new Client({ transport: 'ipc' });
 
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+
 // Global reference because javascript GC
 let win;
 let loginModal;
@@ -162,11 +164,11 @@ async function createWindow() {
 		if (arg[0] === 'minimizeToTray') minimizeToTray = arg[1];
 		win.webContents.send('playerOptionsChange', arg);
 	});
-	
-	if (process.platform === 'win32' && os.release().startsWith('10.')) {
+
+	if (process.platform === 'win32' && os.release().startsWith('10')) {
 		try {
-			const controls = require('./win10');
-			controls(ipcMain, win.webContents);
+			const { win10Controls } = require('./win10');
+			win10Controls(ipcMain, win.webContents);
 		} catch {}
 	}
 
