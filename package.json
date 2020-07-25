@@ -1,7 +1,7 @@
 {
 	"name": "listen.moe-desktop-app",
 	"description": "It's time to ditch other radios",
-	"version": "0.2.9",
+	"version": "0.3.0",
 	"main": "background.js",
 	"private": true,
 	"author": {
@@ -28,6 +28,7 @@
 		"discord-rpc": "discordjs/rpc",
 		"graphql": "^15.3.0",
 		"graphql-tag": "^2.10.4",
+		"node-fetch": "^2.6.0",
 		"patch-package": "^6.2.2",
 		"subscriptions-transport-ws": "^0.9.17",
 		"utf-8-validate": "^5.0.2",
