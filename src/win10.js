@@ -46,7 +46,9 @@ export function win10Controls(ipc, webContents) {
 		Controls.displayUpdater.musicProperties.title = arg.title;
 		Controls.displayUpdater.musicProperties.artist = arg.artist;
 		Controls.displayUpdater.musicProperties.albumTitle = arg.album;
-		Controls.displayUpdater.musicProperties.thumbnail = RandomAccessStreamReference.createFromUri(new Uri(arg.albumImage));
+		if (arg.albumImage) {
+			Controls.displayUpdater.thumbnail = RandomAccessStreamReference.createFromUri(new Uri(arg.albumImage));
+		}
 		Controls.displayUpdater.update();
 	});
 
