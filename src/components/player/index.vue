@@ -413,6 +413,9 @@ export default {
 		websocket() {
 			return this.$store.state.websocket;
 		},
+		alwaysOnTop() {
+			return this.$store.state.alwaysOnTop;
+		},
 		hideFromTaskbar() {
 			return this.$store.state.hideFromTaskbar;
 		},
@@ -525,6 +528,9 @@ export default {
 		},
 		playing() {
 			this.buildTray();
+		},
+		alwaysOnTop() {
+			this.buildTray();
 		}
 	},
 	mounted() {
@@ -613,6 +619,14 @@ export default {
 				{
 					label: 'Settings',
 					click: () => ipcRenderer.send('settingsModal')
+				}
+			));
+			menu.append(new MenuItem(
+				{
+					label: 'Always on top',
+					click: () => ipcRenderer.send('settingsChange', ['alwaysOnTop', !this.alwaysOnTop]),
+					type: 'checkbox',
+					checked: this.alwaysOnTop
 				}
 			));
 			menu.append(new MenuItem(
