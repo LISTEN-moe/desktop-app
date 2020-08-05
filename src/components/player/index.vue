@@ -356,7 +356,7 @@ import Slider from '@/components/slider/slider';
 import { ipcRenderer, remote } from 'electron';
 import { join } from 'path';
 import { onLogout } from '@/vue-apollo';
-const { Menu, MenuItem, Tray, app } = remote;
+const { Menu, MenuItem, Tray } = remote;
 
 const MEDIA_ELEMENT_NODES = new WeakMap();
 
@@ -566,6 +566,9 @@ export default {
 		ipcRenderer.on('togglePlaying', () => {
 			this.togglePlaying();
 		});
+
+		navigator.mediaSession.setActionHandler('play', this.togglePlaying);
+		navigator.mediaSession.setActionHandler('pause', this.togglePlaying);
 	},
 	beforeDestroy() {
 		if (this.tray) this.tray.destroy();
@@ -669,17 +672,25 @@ export default {
 			window.localStorage ? localStorage.setItem('volume', player.volume) : null;
 			this.volume = player.volume * 100;
 		},
-		updateActivity() {
+		async updateActivity() {
 			const artists = this.currentArtists.reduce((out, artist) => {
 				out += `${this.preferRomaji ? artist.nameRomaji ? artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji : artist.name ? artist.name : artist.nameRomaji}${this.currentArtists.length > 1 ? ', ' : ''}`;
 				return out;
 			}, '');
 
-			ipcRenderer.send('changeTrack', {
+			// eslint-disable-next-line no-undef
+			navigator.mediaSession.metadata = new MediaMetadata({
 				title: this.currentSong.name.length >= 50 ? this.currentSong.name.substring(0, 50) : this.currentSong.name,
 				artist: artists.length >= 50 ? artists.substring(0, 50) : artists,
 				album: this.currentAlbum ? this.currentAlbum.name : '',
-				albumImage: `https://cdn.listen.moe/covers/${this.albumCover}`
+				artwork: [
+					{ src: `https://cdn.listen.moe/covers/${this.albumCover}`, sizes: '96x96' },
+					{ src: `https://cdn.listen.moe/covers/${this.albumCover}`, sizes: '128x128' },
+					{ src: `https://cdn.listen.moe/covers/${this.albumCover}`, sizes: '192x192' },
+					{ src: `https://cdn.listen.moe/covers/${this.albumCover}`, sizes: '256x256' },
+					{ src: `https://cdn.listen.moe/covers/${this.albumCover}`, sizes: '384x384' },
+					{ src: `https://cdn.listen.moe/covers/${this.albumCover}`, sizes: '512x512' }
+				]
 			});
 
 			if (this.playing) {
@@ -746,16 +757,15 @@ export default {
 				player.play();
 				MUSIC_VISUALS.start();
 				this.$store.commit('playing', true);
-				ipcRenderer.send('changePlaying', { playing: true });
+				navigator.mediaSession.playbackState = 'playing';
 				this.updateActivity();
 				return;
 			}
 			player.pause();
 			this.$store.commit('playing', false);
-			ipcRenderer.send('changePlaying', { playing: false });
 			MUSIC_VISUALS.stop();
+			navigator.mediaSession.playbackState = 'paused';
 			player.currentTime = 0;
-			player.src = '';
 			ipcRenderer.send('clearDiscordActivity');
 		},
 		getSource() {
@@ -780,6 +790,7 @@ export default {
 			}
 		},
 		buildTray() {
+			// eslint-disable-next-line no-undef
 			if (!this.tray) this.tray = new Tray(join(__static, 'logo-trans.png'));
 			this.tray.setToolTip('LISTEN.moe');
 			this.tray.setContextMenu(this.buildMenu());

@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
-      - name: Install Node v12
+      - name: Install Node v14
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Install dependencies
         run: yarn install
@@ -30,15 +30,15 @@ jobs:
 
   artifact_macos:
     name: Upload Artifact (macOS)
-    runs-on: macOS-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
-      - name: Install Node v12
+      - name: Install Node v14
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Install dependencies
         run: yarn install
@@ -58,12 +58,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
-      - name: install node v12
+      - name: install node v14
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Install dependencies
         run: yarn install

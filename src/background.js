@@ -3,8 +3,8 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import Store from './electron-store';
 import { join } from 'path';
-import os from 'os';
 import fetch from 'node-fetch';
+import semver from 'semver';
 
 const { Client } = require('discord-rpc');
 const rpc = new Client({ transport: 'ipc' });
@@ -16,6 +16,7 @@ let win;
 let loginModal;
 let settingsModal;
 let minimizeToTray;
+let rpcReady = false;
 
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 async function createWindow() {
@@ -43,7 +44,8 @@ async function createWindow() {
 		transparent: true,
 		webPreferences: {
 			webSecurity: false,
-			nodeIntegration: true
+			nodeIntegration: true,
+			enableRemoteModule: true
 		}
 	});
 
@@ -96,8 +98,8 @@ async function createWindow() {
 		shell.openExternal(url);
 	});
 
-	ipcMain.on('updateDiscordActivity', (_, arg) => rpc.setActivity(arg));
-	ipcMain.on('clearDiscordActivity', () => rpc.clearActivity());
+	ipcMain.on('updateDiscordActivity', (_, arg) => rpcReady ? rpc.setActivity(arg) : {});
+	ipcMain.on('clearDiscordActivity', () => rpcReady ? rpc.clearActivity() : {});
 
 	ipcMain.on('loginModal', () => {
 		if (loginModal) return loginModal.show();
@@ -112,7 +114,8 @@ async function createWindow() {
 			parent: win,
 			webPreferences: {
 				webSecurity: false,
-				nodeIntegration: true
+				nodeIntegration: true,
+				enableRemoteModule: true
 			}
 		});
 
@@ -140,7 +143,8 @@ async function createWindow() {
 			parent: win,
 			webPreferences: {
 				webSecurity: false,
-				nodeIntegration: true
+				nodeIntegration: true,
+				enableRemoteModule: true
 			}
 		});
 
@@ -161,38 +165,31 @@ async function createWindow() {
 		win.webContents.send('login', arg);
 		if (settingsModal) settingsModal.webContents.send('login', arg);
 	});
+
 	ipcMain.on('settingsChange', (_, arg) => {
 		if (arg[0] === 'minimizeToTray') minimizeToTray = arg[1];
 		win.webContents.send('playerOptionsChange', arg);
 	});
 
-	if (process.platform === 'win32' && os.release().startsWith('10')) {
-		try {
-			const { win10Controls } = require('./win10');
-			win10Controls(ipcMain, win.webContents);
-		} catch {}
-	}
-
-	await rpc.login({ clientId: '383375119827075072' });
-
 	try {
 		const github = await fetch('https://api.github.com/repos/LISTEN-moe/desktop-app/releases/latest');
 		const json = await github.json();
 		if (!json || !json.name) return;
-		if (app.getVersion() === json.name) return;
+		if (app.getVersion() === json.name || semver.gt(app.getVersion(), json.name)) return;
 
-		const options = {
+		const { response } = await dialog.showMessageBox(null, {
 			type: 'question',
 			buttons: ['No', 'Yes'],
 			defaultId: 1,
 			title: 'LISTEN.moe Desktop App',
 			message: `Version ${json.name} is available`,
 			detail: 'Do you want to go to the releases page to download the latest version?'
-		};
-
-		const { response } = await dialog.showMessageBox(null, options);
+		});
 		if (response) shell.openExternal('https://github.com/LISTEN-moe/desktop-app/releases/latest');
 	} catch {}
+
+	rpc.on('ready', () => rpcReady = true);
+	rpc.login({ clientId: '383375119827075072' });
 }
 
 // Disable hardware acceleration on Linux for transparent background
@@ -207,10 +204,8 @@ app.on('activate', async () => {
 });
 
 app.on('ready', async () => {
-	/* if (isDevelopment && !process.env.IS_TEST) await installVueDevtools(); */
-
 	// Short timeout for Linux to make transparent background work.
-	if (process.platform === 'linux') setTimeout(() => createWindow(), 300);
+	if (process.platform === 'linux') setTimeout(() => createWindow(), 500);
 	else await createWindow();
 });
 
