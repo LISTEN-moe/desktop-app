@@ -22,7 +22,7 @@ jobs:
         run: yarn electron:build
 
       - name: Upload artifact to release
-        uses: icrawl/action-artifact@v1
+        uses: icrawl/action-artifact@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -47,7 +47,7 @@ jobs:
         run: yarn electron:build
 
       - name: Upload artifact to release
-        uses: icrawl/action-artifact@v1
+        uses: icrawl/action-artifact@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -72,7 +72,7 @@ jobs:
         run: yarn electron:build
 
       - name: Upload artifact to release
-        uses: icrawl/action-artifact@v1
+        uses: icrawl/action-artifact@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
