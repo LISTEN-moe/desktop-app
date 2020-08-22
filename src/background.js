@@ -171,6 +171,9 @@ async function createWindow() {
 		win.webContents.send('playerOptionsChange', arg);
 	});
 
+	rpc.on('ready', () => rpcReady = true);
+	rpc.login({ clientId: '383375119827075072' });
+
 	try {
 		const github = await fetch('https://api.github.com/repos/LISTEN-moe/desktop-app/releases/latest');
 		const json = await github.json();
@@ -187,9 +190,6 @@ async function createWindow() {
 		});
 		if (response) shell.openExternal('https://github.com/LISTEN-moe/desktop-app/releases/latest');
 	} catch {}
-
-	rpc.on('ready', () => rpcReady = true);
-	rpc.login({ clientId: '383375119827075072' });
 }
 
 // Disable hardware acceleration on Linux for transparent background
