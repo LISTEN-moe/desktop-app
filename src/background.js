@@ -18,6 +18,10 @@ let settingsModal;
 let minimizeToTray;
 let rpcReady = false;
 
+if (app.requestSingleInstanceLock() === false) {
+	app.quit();
+}
+
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 async function createWindow() {
 	const store = new Store({
@@ -207,6 +211,15 @@ app.on('ready', async () => {
 	// Short timeout for Linux to make transparent background work.
 	if (process.platform === 'linux') setTimeout(() => createWindow(), 500);
 	else await createWindow();
+});
+
+app.on('second-instance', () => {
+	if (win) {
+		if (win.isMinimized()) {
+			win.restore();
+		}
+		win.focus();
+	}
 });
 
 if (isDevelopment) {
