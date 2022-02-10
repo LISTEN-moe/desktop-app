@@ -44,7 +44,7 @@
 		"eslint": "^7.9.0",
 		"eslint-config-aqua": "^7.3.0",
 		"eslint-plugin-vue": "^6.2.2",
-		"node-sass": "^4.14.1",
+		"node-sass": "^7.0.0",
 		"sass-loader": "^10.0.2",
 		"vue-cli-plugin-apollo": "^0.22.2",
 		"vue-cli-plugin-electron-builder": "^2.0.0-rc.4",
