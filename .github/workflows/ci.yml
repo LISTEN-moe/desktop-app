@@ -1,0 +1,47 @@
+name: Desktop
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-latest, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - name: Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libdbus-1-dev libfontconfig1-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libx11-xcb-dev libxcb1-dev libx11-dev libegl1-mesa-dev libvulkan-dev
+      - run: cargo test --locked --no-default-features
+      - run: cargo clippy --locked --all-targets --features ui-test -- -D warnings
+      - run: cargo build --locked --release
+      - name: Package Linux and macOS executable
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p target/package
+          tar -czf target/package/listen-moe-${{ runner.os }}-${{ runner.arch }}.tar.gz -C target/release listen-moe
+      - name: Package Windows executable
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force target/package
+          Compress-Archive -Path target/release/listen-moe.exe -DestinationPath target/package/listen-moe-${{ runner.os }}-${{ runner.arch }}.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: listen-moe-${{ runner.os }}-${{ runner.arch }}
+          path: target/package/*
+          if-no-files-found: error
