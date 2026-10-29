@@ -35,7 +35,7 @@ rustls = { version = "0.23", default-features = false, features = ["ring", "std"
 rustfft = "6.4"
 rtrb = "0.4"
 image = { version = "0.25", default-features = false, features = ["jpeg", "png", "gif", "webp"] }
-raw-window-handle = "0.6"
+raw-window-handle = { version = "0.6", features = ["std"] }
 url = "2"
 tempfile = "3"
 stream-http-client = { package = "reqwest", version = "0.13", default-features = false, features = ["rustls"], optional = true }
