@@ -24,6 +24,32 @@ mod check {
     };
     use std::{sync::Arc, time::Duration};
 
+    fn assert_control_consumes_press(window: &mut Window, id: &'static str, cx: &mut App) {
+        let position = window.find(id).bounds().center();
+        let result = window.dispatch_event(
+            PlatformInput::MouseDown(MouseDownEvent {
+                button: MouseButton::Left,
+                position,
+                ..Default::default()
+            }),
+            cx,
+        );
+        assert!(
+            !result.propagate,
+            "{id} must consume the press before Windows starts a caption drag"
+        );
+        // Release outside the control to cancel the click without activating it.
+        window.dispatch_event(
+            PlatformInput::MouseUp(MouseUpEvent {
+                button: MouseButton::Left,
+                position: point(px(-1.), px(-1.)),
+                ..Default::default()
+            }),
+            cx,
+        );
+        window.render_frame(cx);
+    }
+
     fn save_preferences_screenshot(
         context: &mut HeadlessAppContext,
         window: AnyWindowHandle,
@@ -344,6 +370,18 @@ mod check {
         });
         let (widget, _) = context.update(|cx| widget::open(model.clone(), cx))?;
         context.update_window(widget, |_, window, cx| window.render_frame(cx))?;
+        context.update_window(widget, |_, window, cx| {
+            for id in [
+                "play",
+                "favorite",
+                "volume",
+                "preferences",
+                "artist-link",
+                "album-link",
+            ] {
+                assert_control_consumes_press(window, id, cx);
+            }
+        })?;
         let idle_icons = context.capture_screenshot(widget)?;
         let icon_bounds = context.update_window(widget, |_, window, cx| {
             window.hover("preferences", cx);
@@ -432,6 +470,7 @@ mod check {
         context.update_window(widget, |_, window, cx| {
             window.render_frame(cx);
             assert!(window.try_find("track-title").is_none());
+            assert_control_consumes_press(window, "volume-slider-control", cx);
             let bounds = window.find("volume-slider-control").bounds();
             window.click_at(
                 "volume-slider-control",
@@ -473,6 +512,20 @@ mod check {
             window.press("escape", cx);
             assert!(window.try_find("volume-slider-control").is_none());
             cx.set_reduce_motion(false);
+            let position = window.find("track-title").bounds().center();
+            let result = window.dispatch_event(
+                PlatformInput::MouseDown(MouseDownEvent {
+                    button: MouseButton::Right,
+                    position,
+                    ..Default::default()
+                }),
+                cx,
+            );
+            assert!(
+                !result.propagate,
+                "opening preferences consumes the Windows caption context-menu press"
+            );
+            assert!(model.read(cx).preferences_window.is_some());
             window.click("preferences", cx);
         })?;
         let original_song = context.update(|cx| model.read(cx).song.clone().unwrap());
@@ -515,6 +568,7 @@ mod check {
         save_preferences_screenshot(&mut context, preferences, "preferences-default.png")?;
         context.update_window(preferences, |_, window, cx| {
             window.render_frame(cx);
+            assert_control_consumes_press(window, "close-preferences", cx);
             assert!(window.try_find("spacing").is_none());
             assert!(window.try_find("glass").is_none());
             assert_eq!(window.viewport_size(), size(px(440.), px(700.)));

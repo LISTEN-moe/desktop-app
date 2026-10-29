@@ -12,6 +12,7 @@ use gpui_kit::component::{
 };
 use gpui_kit::prelude::FluentBuilder;
 use gpui_kit::*;
+use listen_moe_desktop::platform::window as platform_window;
 use listen_moe_desktop::radio::audio::Status;
 
 gpui_kit::actions!(
@@ -63,6 +64,9 @@ impl Render for Widget {
         div()
             .relative()
             .size_full()
+            // Native drag hitboxes are not replayed with cached paint in GPUI.
+            // Keep this on the outer view so visualizer frames retain dragging.
+            .window_control_area(WindowControlArea::Drag)
             .child(
                 div()
                     .absolute()
@@ -127,6 +131,7 @@ pub fn open(
             ..Default::default()
         },
         |window, cx| {
+            platform_window::configure_frameless(window);
             window.set_window_title("LISTEN.moe");
             window.set_rem_size(cx.theme().font_size);
             cx.new(|cx| Widget::new(model, window, cx))
@@ -487,10 +492,14 @@ impl Render for PlayerControls {
             .on_action(|_: &PreviousControl, window, cx| window.focus_prev(cx))
             .on_mouse_down(
                 MouseButton::Right,
-                cx.listener(|this, _, _, cx| this.settings(cx)),
+                cx.listener(|this, _, _, cx| {
+                    this.settings(cx);
+                    cx.stop_propagation();
+                }),
             )
-            // Interactive children stop mouse-down propagation. Every remaining
-            // pixel, including the transparent gap, can start a native window move.
+            // Windows uses the native caption hit-test; start_window_move handles
+            // Linux/macOS. Interactive children consume the press before Windows
+            // can start moving, including buttons, links, and the volume slider.
             .on_mouse_down(MouseButton::Left, |_, window, _| window.start_window_move())
             .cursor_move()
             .flex()

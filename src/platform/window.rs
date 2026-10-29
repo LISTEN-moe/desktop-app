@@ -12,6 +12,18 @@ mod implementation;
 #[path = "window/macos.rs"]
 mod implementation;
 
+pub fn configure_frameless(_window: &Window) {
+    #[cfg(target_os = "windows")]
+    {
+        let result = HasWindowHandle::window_handle(_window)
+            .map_err(anyhow::Error::from)
+            .and_then(|handle| implementation::remove_border(handle.as_raw()));
+        if let Err(error) = result {
+            eprintln!("Cannot remove the native window border: {error:#}");
+        }
+    }
+}
+
 pub fn supports_always_on_top(window: &Window) -> bool {
     HasWindowHandle::window_handle(window)
         .ok()

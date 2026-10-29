@@ -7,6 +7,7 @@ use gpui_kit::component::{
 };
 use gpui_kit::prelude::FluentBuilder;
 use gpui_kit::*;
+use listen_moe_desktop::platform::window as platform_window;
 use listen_moe_desktop::radio::{model::Channel, preferences::Preferences};
 
 gpui_kit::actions!(preferences, [ClosePreferences]);
@@ -29,7 +30,10 @@ pub fn open(model: Entity<PlayerState>, cx: &mut App) -> anyhow::Result<()> {
             ..Default::default()
         },
         cx,
-        |window, cx| cx.new(|cx| PreferencesWindow::new(model.clone(), window, cx)),
+        |window, cx| {
+            platform_window::configure_frameless(window);
+            cx.new(|cx| PreferencesWindow::new(model.clone(), window, cx))
+        },
     )?;
     model.update(cx, |state, cx| {
         state.preferences_window = Some(handle);
@@ -432,6 +436,7 @@ impl Render for PreferencesWindow {
                     .flex_shrink_0()
                     .h(px(40.))
                     .cursor_move()
+                    .window_control_area(WindowControlArea::Drag)
                     .on_mouse_down(MouseButton::Left, |_, window, _| window.start_window_move())
                     .child(
                         div()
