@@ -1,0 +1,25 @@
+{
+  "op": 1,
+  "t": "TRACK_UPDATE",
+  "d": {
+    "song": {
+      "id": 42,
+      "title": "日本語の曲",
+      "titleRomaji": "Nihongo no Uta",
+      "duration": 218,
+      "artists": [{
+        "id": 7,
+        "name": "歌手",
+        "nameRomaji": "Singer",
+        "characters": [{"id": 9, "name": "役", "nameRomaji": "Character"}]
+      }],
+      "albums": [{"id": 12, "name": "アルバム", "nameRomaji": "Album", "image": "日本 #1?.jpg"}],
+      "requester": {"username": "old", "displayName": "Old requester"}
+    },
+    "startTime": "2026-10-28T02:00:00.000Z",
+    "requester": {"username": "listener", "displayName": "Listener"},
+    "event": {"name": "Special broadcast"},
+    "listeners": 100,
+    "lastPlayed": []
+  }
+}

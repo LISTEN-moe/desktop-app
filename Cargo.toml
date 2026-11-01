@@ -1,0 +1,76 @@
+[package]
+name = "listen-moe-desktop"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+publish = false
+
+[[bin]]
+name = "listen-moe"
+path = "src/main.rs"
+required-features = ["desktop"]
+
+[features]
+default = ["desktop"]
+ui-test = ["desktop", "gpui-kit/test-support"]
+desktop = ["dep:gpui-kit", "dep:rodio", "dep:stream-download", "dep:stream-http-client", "dep:souvlaki", "dep:notify-rust", "dep:discord-rich-presence"]
+
+[dependencies]
+anyhow = "1"
+async-channel = "2"
+directories = "6"
+futures-util = "0.3"
+env_logger = "0.11"
+gpui-kit = { version = "=0.8.1", optional = true }
+keyring = { version = "3.6", features = ["apple-native", "windows-native", "sync-secret-service", "crypto-rust"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
+rodio = { version = "0.21", default-features = false, features = ["playback", "symphonia-mp3"], optional = true }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+stream-download = { version = "0.24", default-features = false, features = ["reqwest", "reqwest-rustls"], optional = true }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "net"] }
+tokio-util = { version = "0.7", features = ["rt"] }
+tokio-tungstenite = { version = "0.28", features = ["rustls-tls-native-roots"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rustfft = "6.4"
+rtrb = "0.4"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "gif", "webp"] }
+raw-window-handle = { version = "0.6", features = ["std"] }
+url = "2"
+tempfile = "3"
+stream-http-client = { package = "reqwest", version = "0.13", default-features = false, features = ["rustls"], optional = true }
+souvlaki = { version = "0.8", optional = true }
+notify-rust = { version = "4", optional = true }
+discord-rich-presence = { version = "1.1", optional = true }
+
+
+[target.'cfg(target_os = "linux")'.dependencies]
+x11rb = "0.13"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+windows = { version = "0.61", features = ["Win32_Foundation", "Win32_Graphics_Dwm", "Win32_UI_WindowsAndMessaging"] }
+
+[target.'cfg(target_os = "windows")'.build-dependencies]
+embed-resource = "3"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-app-kit = "0.3"
+objc2-foundation = "0.3"
+
+[[test]]
+name = "ui"
+path = "tests/ui.rs"
+harness = false
+required-features = ["ui-test"]
+
+[[example]]
+name = "profile_widget"
+required-features = ["ui-test"]
+
+[profile.dev]
+debug = 1
+
+[profile.release]
+lto = "thin"
+strip = "symbols"

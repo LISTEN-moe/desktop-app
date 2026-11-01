@@ -1,4 +1,0 @@
-query checkFavorites($songs: [Int!]!, $songsWithoutAlbum: [Int!]!) {
-	songs: checkFavorite(songs: $songs)
-	songsWithoutAlbum: checkFavorite(songs: $songsWithoutAlbum)
-}
