@@ -1,4 +1,6 @@
-use super::{MUTED, SURFACE, action_button, icon_button, state::PlayerState, widget::Quit};
+use super::{
+    MUTED, SURFACE, action_button, icon_button, start_window_move, state::PlayerState, widget::Quit,
+};
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonVariants},
     input::{Input, InputEvent, InputState},
@@ -25,6 +27,7 @@ pub fn open(model: Entity<PlayerState>, cx: &mut App) -> anyhow::Result<()> {
             window_bounds: Some(WindowBounds::centered(size(px(440.), px(700.)), cx)),
             titlebar: None,
             is_resizable: false,
+            app_owns_titlebar_drag: true,
             window_min_size: Some(size(px(360.), px(520.))),
             app_id: Some("moe.listen.desktop".into()),
             ..Default::default()
@@ -139,6 +142,7 @@ impl PreferencesWindow {
             .gap(px(16.))
             .when(enabled, |row| {
                 row.cursor_pointer()
+                    .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
                     .hover(|style| style.text_color(rgb(0xffffff)))
                     .on_click(cx.listener(move |this, _, _, cx| {
                         this.update_preference(setter, !checked, cx);
@@ -199,6 +203,7 @@ fn account_input(
         .flex()
         .flex_col()
         .gap(px(6.))
+        .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
         .child(
             div()
                 .text_size(px(12.))
@@ -418,6 +423,9 @@ impl Render for PreferencesWindow {
             .on_action(|_: &ClosePreferences, window, _| window.remove_window())
             .on_action(|_: &Quit, _, cx| cx.quit())
             .size_full()
+            .window_control_area(WindowControlArea::Drag)
+            .on_mouse_down(MouseButton::Left, start_window_move)
+            .cursor_move()
             .flex()
             .flex_col()
             .gap(px(20.))
@@ -435,9 +443,6 @@ impl Render for PreferencesWindow {
                     .justify_between()
                     .flex_shrink_0()
                     .h(px(40.))
-                    .cursor_move()
-                    .window_control_area(WindowControlArea::Drag)
-                    .on_mouse_down(MouseButton::Left, |_, window, _| window.start_window_move())
                     .child(
                         div()
                             .text_size(px(20.))

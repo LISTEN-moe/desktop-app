@@ -13,11 +13,19 @@ use gpui_kit::component::{
     tooltip::Tooltip,
 };
 use gpui_kit::{
-    App, ElementId, Image, ImageFormat, InteractiveElement, MouseButton, ParentElement,
-    SharedString, Styled, Svg, px, rgb, rgba,
+    App, ElementId, Image, ImageFormat, InteractiveElement, MouseButton, MouseDownEvent,
+    ParentElement, SharedString, Styled, Svg, Window, px, rgb, rgba,
 };
 use listen_moe_desktop::radio::model::Channel;
 use std::sync::Arc;
+
+pub fn start_window_move(_: &MouseDownEvent, window: &mut Window, cx: &mut App) {
+    // Virtual test windows have no compositor. Keep the event's propagation so
+    // tests can check whether Windows should run its default caption handling.
+    if !cx.is_test() {
+        window.start_window_move();
+    }
+}
 
 pub fn artwork_image(bytes: Vec<u8>) -> Arc<Image> {
     let format = if bytes.starts_with(b"\x89PNG") {

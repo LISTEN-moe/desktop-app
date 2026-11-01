@@ -50,6 +50,29 @@ mod check {
         window.render_frame(cx);
     }
 
+    fn assert_background_allows_drag(window: &mut Window, position: Point<Pixels>, cx: &mut App) {
+        let result = window.dispatch_event(
+            PlatformInput::MouseDown(MouseDownEvent {
+                button: MouseButton::Left,
+                position,
+                ..Default::default()
+            }),
+            cx,
+        );
+        assert!(
+            result.propagate,
+            "empty settings background allows a native drag"
+        );
+        window.dispatch_event(
+            PlatformInput::MouseUp(MouseUpEvent {
+                button: MouseButton::Left,
+                position,
+                ..Default::default()
+            }),
+            cx,
+        );
+    }
+
     fn save_preferences_screenshot(
         context: &mut HeadlessAppContext,
         window: AnyWindowHandle,
@@ -569,6 +592,25 @@ mod check {
         context.update_window(preferences, |_, window, cx| {
             window.render_frame(cx);
             assert_control_consumes_press(window, "close-preferences", cx);
+            for id in [
+                "romaji-row",
+                "artwork-row",
+                "notifications-row",
+                "discord-row",
+                "JPOP",
+                "KPOP",
+            ] {
+                assert_control_consumes_press(window, id, cx);
+            }
+            let bounds = window.find("preferences-window").bounds();
+            for position in [
+                bounds.origin + point(px(12.), px(12.)),
+                point(bounds.left() + px(12.), bounds.center().y),
+                point(bounds.center().x, bounds.bottom() - px(12.)),
+                window.find("appearance-section").bounds().origin + point(px(8.), px(8.)),
+            ] {
+                assert_background_allows_drag(window, position, cx);
+            }
             assert!(window.try_find("spacing").is_none());
             assert!(window.try_find("glass").is_none());
             assert_eq!(window.viewport_size(), size(px(440.), px(700.)));
@@ -585,6 +627,9 @@ mod check {
             window.render_frame(cx);
             assert!(window.try_find("username-field").is_some());
             assert!(window.try_find("password-field").is_some());
+            for id in ["username-field", "password-field"] {
+                assert_control_consumes_press(window, id, cx);
+            }
             assert_eq!(
                 window.find("preferences-footer").bounds(),
                 footer,

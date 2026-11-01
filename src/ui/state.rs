@@ -242,9 +242,9 @@ impl PlayerState {
             let height = self.preferences.widget_height();
             let pin = self.preferences.always_on_top;
             let can_pin = self.can_pin;
-            let result = handle.update(cx, |_, window, _| {
+            let result = handle.update(cx, |_, window, cx| {
                 let width = window.viewport_size().width;
-                window.resize(size(width, px(height)));
+                platform_window::resize_content(window, size(width, px(height)), cx)?;
                 if can_pin {
                     platform_window::always_on_top(window, pin)
                 } else {

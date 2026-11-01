@@ -1,5 +1,5 @@
 use anyhow::Result;
-use gpui_kit::Window;
+use gpui_kit::{App, Pixels, Size, Window};
 use raw_window_handle::{HasWindowHandle, RawWindowHandle};
 
 #[cfg(target_os = "linux")]
@@ -21,6 +21,31 @@ pub fn configure_frameless(_window: &Window) {
         if let Err(error) = result {
             eprintln!("Cannot remove the native window border: {error:#}");
         }
+    }
+}
+
+pub fn resize_content(window: &mut Window, size: Size<Pixels>, _cx: &App) -> Result<()> {
+    #[cfg(target_os = "windows")]
+    {
+        let physical = size.to_device_pixels(window.scale_factor());
+        let handle = HasWindowHandle::window_handle(window)?.as_raw();
+        // As in GPUI's resize implementation, deliver native resize callbacks
+        // after the current UI update releases its borrow of the window.
+        _cx.foreground_executor()
+            .spawn(async move {
+                if let Err(error) =
+                    implementation::resize_content(handle, physical.width.0, physical.height.0)
+                {
+                    eprintln!("Cannot resize the player window: {error:#}");
+                }
+            })
+            .detach();
+        Ok(())
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        window.resize(size);
+        Ok(())
     }
 }
 

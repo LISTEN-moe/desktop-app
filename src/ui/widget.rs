@@ -1,4 +1,6 @@
-use super::{MUTED, PLAYER_SURFACE, icon_button, preferences, state::PlayerState};
+use super::{
+    MUTED, PLAYER_SURFACE, icon_button, preferences, start_window_move, state::PlayerState,
+};
 use gpui_kit::base::{Transition, transition};
 use std::time::Duration;
 
@@ -500,7 +502,7 @@ impl Render for PlayerControls {
             // Windows uses the native caption hit-test; start_window_move handles
             // Linux/macOS. Interactive children consume the press before Windows
             // can start moving, including buttons, links, and the volume slider.
-            .on_mouse_down(MouseButton::Left, |_, window, _| window.start_window_move())
+            .on_mouse_down(MouseButton::Left, start_window_move)
             .cursor_move()
             .flex()
             .items_center()
