@@ -9,7 +9,7 @@ use gpui_kit::component::{
 };
 use gpui_kit::prelude::FluentBuilder;
 use gpui_kit::*;
-use listen_moe_desktop::platform::window as platform_window;
+use listen_moe_desktop::platform::{application, window as platform_window};
 use listen_moe_desktop::radio::{model::Channel, preferences::Preferences};
 
 gpui_kit::actions!(preferences, [ClosePreferences]);
@@ -29,7 +29,8 @@ pub fn open(model: Entity<PlayerState>, cx: &mut App) -> anyhow::Result<()> {
             is_resizable: false,
             app_owns_titlebar_drag: true,
             window_min_size: Some(size(px(360.), px(520.))),
-            app_id: Some("moe.listen.desktop".into()),
+            app_id: Some(application::APP_ID.into()),
+            icon: Some(application::window_icon()?),
             ..Default::default()
         },
         cx,

@@ -14,7 +14,7 @@ use gpui_kit::component::{
 };
 use gpui_kit::prelude::FluentBuilder;
 use gpui_kit::*;
-use listen_moe_desktop::platform::window as platform_window;
+use listen_moe_desktop::platform::{application, window as platform_window};
 use listen_moe_desktop::radio::audio::Status;
 
 gpui_kit::actions!(
@@ -128,7 +128,8 @@ pub fn open(
             is_minimizable: false,
             app_owns_titlebar_drag: true,
             window_background: WindowBackgroundAppearance::Transparent,
-            app_id: Some("moe.listen.desktop".into()),
+            app_id: Some(application::APP_ID.into()),
+            icon: Some(application::window_icon()?),
             window_min_size: Some(size(px(360.), px(72.))),
             ..Default::default()
         },

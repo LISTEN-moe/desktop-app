@@ -4,6 +4,8 @@
 <h2 align="center">Official LISTEN.moe Desktop Client</h2>
 <h4 align="center">Simple, native <a href="https://listen.moe">LISTEN.moe</a> client for Windows/Linux/Mac, built with Rust and GPUI Kit.</h4>
 
+https://github.com/user-attachments/assets/30162564-c47f-4d8a-aacf-9b5fb5b9a1ec
+
 Drag any empty space to move the window. Click the cogwheel button or rightclick the app to configure various options as described below.
 
 ## Installation

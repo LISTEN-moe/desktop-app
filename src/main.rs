@@ -4,6 +4,7 @@ mod diagnostics;
 mod ui;
 
 use gpui_kit::*;
+use listen_moe_desktop::platform::application;
 use listen_moe_desktop::radio::preferences::{Preferences, PreferencesStore};
 use ui::{preferences::ClosePreferences, state::PlayerState};
 
@@ -26,7 +27,10 @@ fn main() -> anyhow::Result<()> {
         .run(move |cx| {
             gpui_kit::init(cx);
             ui::apply_theme(preferences.channel, cx);
-            cx.set_app_identity("moe.listen.desktop", "LISTEN.moe");
+            cx.set_app_identity(application::APP_ID, application::APP_NAME);
+            if let Err(error) = application::initialize() {
+                eprintln!("Cannot configure the application icon: {error:#}");
+            }
             ui::widget::bind_keys(cx);
             cx.bind_keys([KeyBinding::new(
                 "escape",

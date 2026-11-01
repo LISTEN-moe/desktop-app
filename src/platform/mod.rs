@@ -1,3 +1,4 @@
+pub mod application;
 pub mod credentials;
 #[cfg(feature = "desktop")]
 pub mod media;
