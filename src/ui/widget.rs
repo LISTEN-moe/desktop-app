@@ -190,6 +190,23 @@ impl PlayerControls {
         }
         cx.notify();
     }
+
+    fn toggle_settings(&mut self, cx: &mut Context<Self>) {
+        if let Some(handle) = self.model.read(cx).preferences_window
+            && handle
+                .update(cx, |_, window, _| window.remove_window())
+                .is_ok()
+        {
+            self.model.update(cx, |state, cx| {
+                state.preferences_window = None;
+                cx.notify();
+            });
+            self.volume_open = false;
+            cx.notify();
+        } else {
+            self.settings(cx);
+        }
+    }
 }
 
 pub(crate) fn alternate_metadata(
@@ -429,7 +446,7 @@ impl Render for PlayerControls {
                     "Preferences",
                     MUTED,
                 )
-                .on_click(cx.listener(|this, _, _, cx| this.settings(cx))),
+                .on_click(cx.listener(|this, _, _, cx| this.toggle_settings(cx))),
             );
         let artwork = div()
             .id("album-link")
@@ -495,7 +512,7 @@ impl Render for PlayerControls {
             .on_mouse_down(
                 MouseButton::Right,
                 cx.listener(|this, _, _, cx| {
-                    this.settings(cx);
+                    this.toggle_settings(cx);
                     cx.stop_propagation();
                 }),
             )

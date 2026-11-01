@@ -24,6 +24,30 @@ mod check {
     };
     use std::{sync::Arc, time::Duration};
 
+    fn right_click_player(window: &mut Window, cx: &mut App) {
+        let position = window.find("track-title").bounds().center();
+        let result = window.dispatch_event(
+            PlatformInput::MouseDown(MouseDownEvent {
+                button: MouseButton::Right,
+                position,
+                ..Default::default()
+            }),
+            cx,
+        );
+        assert!(
+            !result.propagate,
+            "toggling preferences consumes the Windows caption context-menu press"
+        );
+        window.dispatch_event(
+            PlatformInput::MouseUp(MouseUpEvent {
+                button: MouseButton::Right,
+                position,
+                ..Default::default()
+            }),
+            cx,
+        );
+    }
+
     fn assert_control_consumes_press(window: &mut Window, id: &'static str, cx: &mut App) {
         let position = window.find(id).bounds().center();
         let result = window.dispatch_event(
@@ -535,21 +559,31 @@ mod check {
             window.press("escape", cx);
             assert!(window.try_find("volume-slider-control").is_none());
             cx.set_reduce_motion(false);
-            let position = window.find("track-title").bounds().center();
-            let result = window.dispatch_event(
-                PlatformInput::MouseDown(MouseDownEvent {
-                    button: MouseButton::Right,
-                    position,
-                    ..Default::default()
-                }),
-                cx,
-            );
-            assert!(
-                !result.propagate,
-                "opening preferences consumes the Windows caption context-menu press"
-            );
+            right_click_player(window, cx);
             assert!(model.read(cx).preferences_window.is_some());
             window.click("preferences", cx);
+            assert!(
+                model.read(cx).preferences_window.is_none(),
+                "the settings icon closes an already-open preferences window"
+            );
+        })?;
+        assert_eq!(context.update(|cx| cx.windows().len()), 1);
+        context.update_window(widget, |_, window, cx| {
+            window.click("preferences", cx);
+            assert!(model.read(cx).preferences_window.is_some());
+        })?;
+        assert_eq!(context.update(|cx| cx.windows().len()), 2);
+        context.update_window(widget, |_, window, cx| {
+            right_click_player(window, cx);
+            assert!(
+                model.read(cx).preferences_window.is_none(),
+                "right-clicking the player closes an already-open preferences window"
+            );
+        })?;
+        assert_eq!(context.update(|cx| cx.windows().len()), 1);
+        context.update_window(widget, |_, window, cx| {
+            window.click("preferences", cx);
+            assert!(model.read(cx).preferences_window.is_some());
         })?;
         let original_song = context.update(|cx| model.read(cx).song.clone().unwrap());
         context.update(|cx| {
